@@ -9,6 +9,10 @@ class AdminModel(models.Model):
     admin_last_name = models.CharField(max_length=100, null=True)
     admin_email = models.EmailField()
     admin_password = models.CharField(max_length=100)
+    is_superadmin = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.admin_first_name} {self.admin_last_name}"
 
 @receiver(pre_save, sender=AdminModel)
 def generate_unique_id(sender, instance, **kwargs):
@@ -22,11 +26,21 @@ def generate_unique_id(sender, instance, **kwargs):
 
 
 class UserModel(models.Model):
-    user_id = models.AutoField(primary_key=True)
+    user_id = models.CharField(primary_key=True, max_length=10, unique=True)
     user_first_name = models.CharField(max_length=100)
     user_last_name = models.CharField(max_length=100)
     user_email = models.CharField(max_length=100)
-    user_password = models.CharField(max_length=100)
+    user_phoneno = models.CharField(max_length=100)
+
+@receiver(pre_save, sender=UserModel)
+def generate_unique_id(sender, instance, **kwargs):
+    if not instance.user_id:
+        last_admin = UserModel.objects.all().order_by('user_id').last()
+        if last_admin:
+            new_id = int(last_admin.user_id.split('USR')[-1]) + 1
+        else:
+            new_id = 1
+        instance.admin_id = f"USR{new_id:05d}"
 
 
 class LoanModel(models.Model):
@@ -54,6 +68,12 @@ class BankModel(models.Model):
 
 
 class LoanApplicationModel(models.Model):
+    Accept = 'Accept'
+    Reject = 'Reject'
+    STATUS_CHOICES = [
+        (Accept, 'Accept'),
+        (Reject, 'Reject'),
+    ]
     form_id = models.CharField(primary_key=True, max_length=100)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -63,16 +83,20 @@ class LoanApplicationModel(models.Model):
     loan_name = models.ForeignKey(LoanModel, on_delete=models.CASCADE)
     loan_amount = models.DecimalField(max_digits=10, decimal_places=2)
     followup_date = models.DateField()
-
     description = models.TextField()
-
     status_name = models.ForeignKey(StatusModel, on_delete=models.CASCADE)
+    application_description = models.TextField(null=True)
     bank_name = models.ForeignKey(BankModel, on_delete=models.CASCADE)
 
     executive_name = models.CharField(max_length=100)
     mobileno_1 = models.CharField(max_length=15)
     mobileno_2 = models.CharField(max_length=15, blank=True, null=True)
-    admin = models.ForeignKey(AdminModel, on_delete=models.CASCADE)
+    assigned_to = models.ForeignKey(AdminModel, on_delete=models.CASCADE)
+    work_status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.loan_name}"
@@ -87,3 +111,8 @@ def generate_unique_id(sender, instance, **kwargs):
         else:
             new_id = 1
         instance.form_id = f"FORM{new_id:05d}"
+
+
+class UploadedFile(models.Model):
+    loan_application = models.ForeignKey(LoanApplicationModel, related_name='uploaded_files', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='files/')

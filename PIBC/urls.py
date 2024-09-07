@@ -24,6 +24,13 @@ urlpatterns = [
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
     path('register', views.register, name='register'),
-    path('form', views.loanform, name='form'),
+    path('application', views.loanform, name='form'),
     path('loan-page/<str:form_id>', views.loan_page, name='loan-page'),
+    path('create-user', views.createuser, name='create-user'),
+    path('add-loan', views.addloan, name='addloan'),
+    path('add-status', views.addstatus, name='addstatus'),
+
+    #chart
+    path('loan-data/', views.get_loan_data, name='get_loan_data'),
+    path('loan-totals/', views.get_loan_totals, name='get_loan_totals'),
 ]

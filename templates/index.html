@@ -34,6 +34,7 @@
 
         .table td {
             white-space: nowrap; /* Prevents text from wrapping in data cells */
+            color: #878787;
         }
 
         .table {
@@ -82,12 +83,42 @@
                     <span>Dashboard</span></a>
             </li>
 
+            {% if admin.is_superadmin %}
             <!-- Nav Item - Form -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'form' %}">
+
                     <i class="fas fa-fw fa-file"></i>
-                    <span>Form</span></a>
+                    <span>Application</span></a>
             </li>
+            {% endif %}
+
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'create-user' %}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Create User</span></a>
+            </li>
+            {% endif %}
+
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'addloan' %}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Add Loan</span></a>
+            </li>
+            {% endif %}
+
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'addstatus' %}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Add Status</span></a>
+            </li>
+            {% endif %}
             <!-- Divider -->
 <!--            <hr class="sidebar-divider">-->
 
@@ -198,6 +229,7 @@
 <!--                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
                     </div>
 
+                    {% if admin.is_superadmin %}
                     <!-- Content Row -->
                     <div class="row">
 
@@ -209,7 +241,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Users</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{total_users}}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{total_users_count}}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -227,7 +259,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 Loans</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{loan_app}}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{loan_app_count}}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
@@ -236,8 +268,8 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
+                    {% endif %}
 
                     <!-- Content Row -->
 
@@ -255,12 +287,13 @@
                                 <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart"></canvas>
+<!--                                        <canvas id="myBarChart"></canvas>-->
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Pie Chart -->
+                        <!-- Notifications -->
                         <div class="col-xl-4 col-lg-5">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
@@ -291,14 +324,12 @@
 
                     <!-- Content Row -->
                     <div class="row">
-
                         <!-- Content Column -->
                         <div class="col-lg-12 mb-4">
-
                             <!-- Project Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Loans</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive-xxl">
@@ -306,6 +337,7 @@
                                             <table class="table table-bordered table-hover all-users">
                                                 <thead>
                                                     <tr>
+                                                      <th scope="col">Sr No</th>
                                                       <th scope="col">ID</th>
                                                       <th scope="col">First Name</th>
                                                       <th scope="col">Last Name</th>
@@ -319,14 +351,23 @@
                                                       <th scope="col">Status</th>
                                                       <th scope="col">Bank</th>
                                                       <th scope="col">Executive Name</th>
-                                                      <th scope="col">Mobile No</th>
+                                                      <th scope="col">Mobile No 1</th>
+
+                                                        {% if admin.is_superadmin %}
+                                                      <th scope="col">Name</th>
+                                                        {% endif %}
 
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {% for form in forms %}
                                                     <tr>
-                                                    <th scope="row">{{form.form_id}}</th>
+                                                    <th scope="row">{{ forloop.counter }}</th>
+                                                    <td>
+                                                        <a href="{% url 'loan-page' form.form_id %}">
+                                                        {{form.form_id}}
+                                                        </a>
+                                                    </td>
                                                     <td>{{form.first_name}}</td>
                                                     <td>{{form.last_name}}</td>
                                                     <td>{{form.district}}</td>
@@ -341,8 +382,13 @@
                                                     <td>{{form.executive_name}}</td>
                                                     <td>
                                                         {{form.mobileno_1}}<br/>
+                                                        {% if form.mobileno_2 %}
                                                         {{form.mobileno_2}}
+                                                        {% endif %}
                                                     </td>
+                                                        {% if admin.is_superadmin %}
+                                                        <td>{{form.assigned_to.admin_first_name}} {{form.assigned_to.admin_last_name}}</td>
+                                                        {% endif %}
                                                     </tr>
                                                     {% endfor %}
 
@@ -355,6 +401,45 @@
 
                         </div>
                     </div>
+                    {% if admin.is_superadmin %}
+                    <!-- Content Row -->
+                    <div class="row">
+                        <!-- Content Column -->
+                        <div class="col-lg-12 mb-4">
+                            <!-- Project Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">All Users</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive-xxl">
+                                        <table class="table table-bordered table-hover all-users">
+                                            <thead>
+                                                <tr>
+                                                  <th scope="col">Sr. No</th>
+                                                  <th scope="col">ID</th>
+                                                  <th scope="col">First Name</th>
+                                                  <th scope="col">Last Name</th>
+                                                  <th scope="col">Email</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for all_user in all_users %}
+                                                    <tr>
+                                                    <th scope="row">{{ forloop.counter }}</th>
+                                                    <td>{{all_user.admin_id}}</td>
+                                                    <td>{{all_user.admin_first_name}}</td>
+                                                    <td>{{all_user.admin_last_name}}</td>
+                                                    <td>{{all_user.admin_email}}</td>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
 
                 </div>
                 <!-- /.container-fluid -->
@@ -363,13 +448,13 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
-                    </div>
-                </div>
-            </footer>
+<!--            <footer class="sticky-footer bg-white">-->
+<!--                <div class="container my-auto">-->
+<!--                    <div class="copyright text-center my-auto">-->
+<!--                        <span>Copyright &copy; Your Website 2021</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </footer>-->
             <!-- End of Footer -->
 
         </div>
@@ -419,6 +504,7 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
     <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+
 
 </body>
 

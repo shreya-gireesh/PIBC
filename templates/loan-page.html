@@ -34,7 +34,15 @@
         .form-select{
             font-size: 0.8rem!important;
         }
-
+        .col-form-label{
+            color: #004647;
+            font-weight:500;
+            text-transform:capitalize;
+        }
+        .readonly-field {
+        background-color: #f0f0f0;
+        padding: 10px;
+    }
     </style>
   </head>
 
@@ -47,7 +55,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
                 <div class="logo" style="background-image: url({% static 'img/pibc.png' %});"></div>
             </a>
 
@@ -55,60 +63,48 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
 
+            {% if admin.is_superadmin %}
             <!-- Nav Item - Form -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="{% url 'form' %}">
+
                     <i class="fas fa-fw fa-file"></i>
-                    <span>Form</span></a>
+                    <span>Application</span></a>
             </li>
-            <!-- Divider -->
-<!--            <hr class="sidebar-divider">-->
+            {% endif %}
 
-<!--            &lt;!&ndash; Heading &ndash;&gt;-->
-<!--            <div class="sidebar-heading">-->
-<!--                Interface-->
-<!--            </div>-->
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'create-user' %}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Create User</span></a>
+            </li>
+            {% endif %}
 
-            <!-- Nav Item - Pages Collapse Menu -->
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"-->
-<!--                    aria-expanded="true" aria-controls="collapseTwo">-->
-<!--                    <i class="fas fa-fw fa-cog"></i>-->
-<!--                    <span>Components</span>-->
-<!--                </a>-->
-<!--                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">-->
-<!--                    <div class="bg-white py-2 collapse-inner rounded">-->
-<!--                        <h6 class="collapse-header">Custom Components:</h6>-->
-<!--                        <a class="collapse-item" href="buttons.html">Buttons</a>-->
-<!--                        <a class="collapse-item" href="cards.html">Cards</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </li>-->
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'addloan' %}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Add Loan</span></a>
+            </li>
+            {% endif %}
 
-            <!-- Nav Item - Utilities Collapse Menu -->
-
-
-            <!-- Nav Item - Charts -->
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link" href="charts.html">-->
-<!--                    <i class="fas fa-fw fa-chart-area"></i>-->
-<!--                    <span>Charts</span></a>-->
-<!--            </li>-->
-
-            <!-- Nav Item - Tables -->
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link" href="tables.html">-->
-<!--                    <i class="fas fa-fw fa-table"></i>-->
-<!--                    <span>Tables</span></a>-->
-<!--            </li>-->
-
-            <!-- Divider -->
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'addstatus' %}">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Add Status</span></a>
+            </li>
+            {% endif %}
             <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
@@ -200,104 +196,107 @@
                                         {% csrf_token %}
                                         <div class="form-group row">
                                             <label for="first_name" class="col-sm-2 col-form-label">First Name</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.first_name}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.first_name }}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="last_name" class="col-sm-2 col-form-label">Last Name</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.last_name}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.last_name }}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="district" class="col-sm-2 col-form-label">District</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.district}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.district }}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="place" class="col-sm-2 col-form-label">Place</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.place}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.place }}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="phone_no" class="col-sm-2 col-form-label">Phone Number</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.phone_no}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.phone_no }}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="loan_name" class="col-sm-2 col-form-label">Type of Loan</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.loan_name}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.loan_name }}
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="loan_amount" class="col-sm-2 col-form-label">Loan Amount</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.loan_amount}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.loan_amount }}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="followup_date" class="col-sm-2 col-form-label">Follow Up Date</label>
                                             <div class="col-sm-10">
-
-                                                {{form.followup_date}}
+                                                {{ form.followup_date }}
                                             </div>
                                         </div>
 
 
                                         <!-- New Description Box -->
-                                        <div class="form-group">
-                                            <label for="description" class="form-label">Description</label>
+                                        <div class="form-group row">
+                                            <label for="description" class="col-sm-2 col-form-label">Description</label>
 
-                                            {{form.description}}
+                                            <div class="col-sm-10">
+                                                {{form.description}}
+                                            </div>
                                         </div>
                                         <hr>
                                         <div class="form-group row">
                                             <label for="status_name" class="col-sm-2 col-form-label">Status</label>
                                             <div class="col-sm-10">
-
-                                                {{form.status_name}}
+                                                {{ form.status_name }}
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label for="application_description" class="col-sm-2 col-form-label">Application Description</label>
+                                            <div class="col-sm-10" >
+                                             {{form.application_description}}
+                                                </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label for="bank_name" class="col-sm-2 col-form-label">Choose Bank</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.bank_name}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{form.instance.bank_name}}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="executive_name" class="col-sm-2 col-form-label">Executive Name</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.executive_name}}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{form.instance.executive_name}}
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="mobileno_1" class="col-sm-2 col-form-label">Mobile No 1:</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.mobileno_1}}
-                                            </div>
+                                            <div class="col-sm-10 readonly-field">
+            {{form.instance.mobileno_1}}
+        </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="mobileno_2" class="col-sm-2 col-form-label">Mobile No 2:</label>
+                                            <div class="col-sm-10 readonly-field">
+            {{form.instance.mobileno_2}}
+        </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="files" class="col-sm-2 col-form-label">Uploaded files:</label>
                                             <div class="col-sm-10">
-<!--                                                <input type="text" class="form-control form-control-user" id="mobileno2"-->
-<!--                                                        placeholder="Mobile No" name="mobileno_2">-->
-                                                {{form.mobileno_2}}
+                                                {% for file in files %}
+                                                <a href="{{file.file.url}}" download>{{file.file}}</a><br/>
+                                                {% endfor %}
                                             </div>
                                         </div>
 
@@ -326,7 +325,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>Copyright &copy; PIBC 2024</span>
                     </div>
                 </div>
             </footer>
