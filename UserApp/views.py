@@ -20,7 +20,7 @@ def home(request):
         loan_followup = all_loans.filter(assigned_to = user)
         all_users = AdminModel.objects.filter(is_superadmin = False)
         all_users_count = all_users.count()
-        loan_app = LoanApplicationModel.objects.all()
+        loan_app = LoanApplicationModel.objects.all().order_by('-form_id')[:10]
         loan_app_count = loan_app.count()
 
         if admin.is_superadmin :
@@ -128,6 +128,17 @@ def loan_page(request, form_id):
             form = LoanApplicationForm(instance=form_instance)
 
         return render(request, 'loan-page.html', {'username':admin_name,'admin':admin,'form': form, 'files': files})
+
+
+def all_app(request):
+    user = request.session.get('user', None)
+    if user is None:
+        return redirect('/login')
+    else:
+        loan_app = LoanApplicationModel.objects.all()
+        admin = AdminModel.objects.get(admin_id=user)
+        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        return render(request, 'all-files.html', {'username': admin_name, 'admin': admin, 'forms':loan_app})
 
 
 def createuser(request):

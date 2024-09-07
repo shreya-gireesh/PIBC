@@ -75,21 +75,29 @@
             </li>
             {% endif %}
 
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'allapp' %}">
+                    <i class="fas fa-list-alt"></i>
+                    <span>All Applications</span></a>
+            </li>
+            {% endif %}
 
             {% if admin.is_superadmin %}
             <!-- Nav Item - Form -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'create-user' %}">
-                    <i class="fas fa-fw fa-user"></i>
+                    <i class="fas fa-fw fa-user-plus"></i>
                     <span>Create User</span></a>
             </li>
             {% endif %}
 
             {% if admin.is_superadmin %}
             <!-- Nav Item - Form -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'addloan' %}">
-                    <i class="fas fa-fw fa-user"></i>
+                    <i class="fas fa-file-invoice-dollar"></i>
                     <span>Add Loan</span></a>
             </li>
             {% endif %}
@@ -98,7 +106,7 @@
             <!-- Nav Item - Form -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'addstatus' %}">
-                    <i class="fas fa-fw fa-user"></i>
+                    <i class="fas fa-edit"></i>
                     <span>Add Status</span></a>
             </li>
             {% endif %}

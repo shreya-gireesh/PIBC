@@ -25,6 +25,7 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     path('register', views.register, name='register'),
     path('application', views.loanform, name='form'),
+    path('all-application', views.all_app, name='allapp'),
     path('loan-page/<str:form_id>', views.loan_page, name='loan-page'),
     path('create-user', views.createuser, name='create-user'),
     path('add-loan', views.addloan, name='addloan'),

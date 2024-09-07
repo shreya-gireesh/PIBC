@@ -31,16 +31,35 @@
             width: 50%!important;
         }
 
-        .form-select{
-            font-size: 0.8rem!important;
+        .table th {
+
+            white-space: nowrap; /* Prevents text from wrapping */
         }
-        .col-form-label{
-            color: #004647;
-            font-weight:500;
-            text-transform:capitalize;
+
+        .table td {
+            white-space: nowrap; /* Prevents text from wrapping in data cells */
+            color: #878787;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            background-color: transparent;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+
+        .table-responsive-xxl {
+            padding-bottom: 15px;
         }
     </style>
-</head>
+  </head>
 
 <body id="page-top">
 
@@ -173,7 +192,7 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Application</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Form</h1>
 
                     </div>
 
@@ -193,43 +212,75 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Application</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Form</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <form class="p-5 user" method="POST">
-                                        {% csrf_token %}
-                                        <div class="form-group row">
-                                            <label for="admin_first_name" class="col-sm-2 col-form-label">First Name</label>
-                                            <div class="col-sm-10">
+                                    <div class="table-responsive-xxl">
+                                        <div style="overflow-x: auto; max-width: 100%;">
+                                            <table class="table table-bordered table-hover all-users">
+                                                <thead>
+                                                    <tr>
+                                                      <th scope="col">Sr No</th>
+                                                      <th scope="col">ID</th>
+                                                      <th scope="col">First Name</th>
+                                                      <th scope="col">Last Name</th>
+                                                      <th scope="col">District</th>
+                                                      <th scope="col">Place</th>
+                                                      <th scope="col">Phone Number</th>
+                                                      <th scope="col">Loan Name</th>
+                                                      <th scope="col">Amount</th>
+                                                      <th scope="col">FollowUp Date</th>
+                                                      <th scope="col">Description</th>
+                                                      <th scope="col">Status</th>
+                                                      <th scope="col">Bank</th>
+                                                      <th scope="col">Executive Name</th>
+                                                      <th scope="col">Mobile No 1</th>
 
-                                                {{form.admin_first_name}}
-                                            </div>
+                                                        {% if admin.is_superadmin %}
+                                                      <th scope="col">Name</th>
+                                                        {% endif %}
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for form in forms %}
+                                                    <tr>
+                                                    <th scope="row">{{ forloop.counter }}</th>
+                                                    <td>
+                                                        <a href="{% url 'loan-page' form.form_id %}">
+                                                        {{form.form_id}}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{form.first_name}}</td>
+                                                    <td>{{form.last_name}}</td>
+                                                    <td>{{form.district}}</td>
+                                                    <td>{{form.place}}</td>
+                                                    <td>{{form.phone_no}}</td>
+                                                    <td>{{form.loan_name}}</td>
+                                                    <td>{{form.loan_amount}}</td>
+                                                    <td>{{form.followup_date}}</td>
+                                                    <td>{{form.description}}</td>
+                                                    <td>{{form.status_name}}</td>
+                                                    <td>{{form.bank_name}}</td>
+                                                    <td>{{form.executive_name}}</td>
+                                                    <td>
+                                                        {{form.mobileno_1}}<br/>
+                                                        {% if form.mobileno_2 %}
+                                                        {{form.mobileno_2}}
+                                                        {% endif %}
+                                                    </td>
+                                                        {% if admin.is_superadmin %}
+                                                        <td>{{form.assigned_to.admin_first_name}} {{form.assigned_to.admin_last_name}}</td>
+                                                        {% endif %}
+                                                    </tr>
+                                                    {% endfor %}
+
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="admin_last_name" class="col-sm-2 col-form-label">Last Name</label>
-                                            <div class="col-sm-10">
+                                    </div>
 
-                                                {{form.admin_last_name}}
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="admin_email" class="col-sm-2 col-form-label">Email</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.admin_email}}
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="admin_password" class="col-sm-2 col-form-label">Password</label>
-                                            <div class="col-sm-10">
-
-                                                {{form.admin_password}}
-                                            </div>
-                                        </div>
-
-                                        <input type="submit" class="btn btn-primary btn-user btn-block d-block mx-auto" value="SUBMIT">
-                                    </form>
                                 </div>
                             </div>
                         </div>
