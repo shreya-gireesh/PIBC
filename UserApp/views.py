@@ -1,3 +1,5 @@
+from idlelib.iomenu import errors
+
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, TruncYear
 from django.http import JsonResponse
@@ -144,19 +146,34 @@ def all_app(request):
 
 def createuser(request):
     user = request.session.get('user', None)
+    error = ''
     if user is None:
         return redirect('/login')
+
     else:
         admin = AdminModel.objects.get(admin_id=user)
         admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
         if request.method == 'POST':
-            form = AdminForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('/')  # Redirect to login page after successful registration
-        else:
-            form = AdminForm()
-        return render(request, 'create-user.html', {'username':admin_name,'admin':admin,'form': form})
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+
+            if AdminModel.objects.filter(admin_email=email).exists():
+                error = "User with this email already exists"
+            else:
+                if len(password)<8:
+                    error = "Password length must be 8"
+                else:
+                    AdminModel.objects.create(
+                        admin_first_name = first_name,
+                        admin_last_name =last_name,
+                        admin_email = email,
+                        admin_password = password
+                    )
+                    return redirect('/')
+
+        return render(request, 'create-user.html', {'username':admin_name,'admin':admin,'error':error})
 
 
 def addloan(request):
