@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 # Create your models here.
 class AdminModel(models.Model):
-    admin_id = models.CharField(primary_key=True, max_length=20, unique=True)
+    admin_id = models.AutoField(primary_key=True)
     admin_first_name = models.CharField(max_length=100)
     admin_last_name = models.CharField(max_length=100, null=True)
     admin_email = models.EmailField()
@@ -14,33 +14,14 @@ class AdminModel(models.Model):
     def __str__(self):
         return f"{self.admin_first_name} {self.admin_last_name}"
 
-@receiver(pre_save, sender=AdminModel)
-def generate_unique_id(sender, instance, **kwargs):
-    if not instance.admin_id:
-        last_admin = AdminModel.objects.all().order_by('admin_id').last()
-        if last_admin:
-            new_id = int(last_admin.admin_id.split('ADM')[-1]) + 1
-        else:
-            new_id = 1
-        instance.admin_id = f"ADM{new_id:05d}"
-
 
 class UserModel(models.Model):
-    user_id = models.CharField(primary_key=True, max_length=10, unique=True)
+    user_id = models.AutoField(primary_key=True)
     user_first_name = models.CharField(max_length=100)
     user_last_name = models.CharField(max_length=100)
     user_email = models.CharField(max_length=100)
     user_phoneno = models.CharField(max_length=100)
 
-@receiver(pre_save, sender=UserModel)
-def generate_unique_id(sender, instance, **kwargs):
-    if not instance.user_id:
-        last_admin = UserModel.objects.all().order_by('user_id').last()
-        if last_admin:
-            new_id = int(last_admin.user_id.split('USR')[-1]) + 1
-        else:
-            new_id = 1
-        instance.admin_id = f"USR{new_id:05d}"
 
 
 class LoanModel(models.Model):
@@ -74,7 +55,7 @@ class LoanApplicationModel(models.Model):
         (Accept, 'Accept'),
         (Reject, 'Reject'),
     ]
-    form_id = models.CharField(primary_key=True, max_length=100)
+    form_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
@@ -101,16 +82,6 @@ class LoanApplicationModel(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.loan_name}"
 
-
-@receiver(pre_save, sender=LoanApplicationModel)
-def generate_unique_id(sender, instance, **kwargs):
-    if not instance.form_id:
-        last_loan = LoanApplicationModel.objects.all().order_by('form_id').last()
-        if last_loan:
-            new_id = int(last_loan.form_id.split('FORM')[-1]) + 1
-        else:
-            new_id = 1
-        instance.form_id = f"FORM{new_id:05d}"
 
 
 class UploadedFile(models.Model):

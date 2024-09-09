@@ -20,13 +20,14 @@ def home(request):
         loan_followup = all_loans.filter(assigned_to = user)
         all_users = AdminModel.objects.filter(is_superadmin = False)
         all_users_count = all_users.count()
-        loan_app = LoanApplicationModel.objects.all().order_by('-form_id')[:10]
+        loan_app = LoanApplicationModel.objects.all()
         loan_app_count = loan_app.count()
+        last_loan_app = loan_app.order_by('-form_id')[:10]
 
         if admin.is_superadmin :
             context = {
                 'username': admin_name,
-                'forms': loan_app,
+                'forms': last_loan_app,
                 'loans': all_loans,
                 'total_users_count': all_users_count,
                 'loan_app_count': loan_app_count,
