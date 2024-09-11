@@ -49,11 +49,14 @@ class BankModel(models.Model):
 
 
 class LoanApplicationModel(models.Model):
-    Accept = 'Accept'
-    Reject = 'Reject'
+    ACCEPT = 'Accept'
+    REJECT = 'Reject'
+    NOT_SELECTED = 'Not selected'
+
     STATUS_CHOICES = [
-        (Accept, 'Accept'),
-        (Reject, 'Reject'),
+        (ACCEPT, 'Accept'),
+        (REJECT, 'Reject'),
+        (NOT_SELECTED, 'Not selected'),
     ]
     form_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
@@ -76,9 +79,9 @@ class LoanApplicationModel(models.Model):
     work_status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
+        default=NOT_SELECTED,  # Set default value to "Not selected"
         null=True,
     )
-
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.loan_name}"
 

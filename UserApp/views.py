@@ -17,8 +17,14 @@ def home(request):
         admin = AdminModel.objects.get(admin_id = user)
         admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
         loan_form = LoanApplicationModel.objects.filter(assigned_to = user)
+
+        # Loans assigned to the user where status is "Accept"
+        accepted_loans = loan_form.filter(work_status='Accept')
+        new_loans = loan_form.filter(work_status = 'Not selected')
+        accepted_loans_count = accepted_loans.count()
+
         today = datetime.now().date()
-        all_loans = LoanApplicationModel.objects.filter(followup_date = today)
+        all_loans = LoanApplicationModel.objects.filter(followup_date = today, work_status='Accept')
         loan_followup = all_loans.filter(assigned_to = user)
         all_users = AdminModel.objects.filter(is_superadmin = False)
         all_users_count = all_users.count()
@@ -37,16 +43,40 @@ def home(request):
                 'admin': admin
             }
         else:
+            # if request.method == 'POST':
+            #     # Check if the user is submitting an update for the status
+            #     status = request.POST.get('status')
+            #
+            #     if status in ['Accept', 'Reject']:
+            #         loan_form.work_status = status
+            #         loan_form.save()
             context = {
                 'username': admin_name,
-                'forms': loan_form,
+                'forms': accepted_loans,
+                'new_loans': new_loans,
                 'loans': loan_followup,
                 'total_users_count': all_users_count,
-                'loan_app_count': loan_app_count,
+                'loan_app_count': accepted_loans_count,
                 'admin': admin
             }
 
         return render(request, 'index.html', context)
+
+
+def update_status(request, form_id):
+    # Get the loan form by its ID
+    loan_form = get_object_or_404(LoanApplicationModel, form_id=form_id)
+
+    if request.method == 'POST':
+        # Check if the user is submitting an update for the status
+        status = request.POST.get('status')
+
+        if status in ['Accept', 'Reject']:
+            loan_form.work_status = status
+            loan_form.save()
+
+        # After updating the status, redirect back to the home page
+        return redirect('/')
 
 
 def login(request):

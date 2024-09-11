@@ -21,6 +21,7 @@ from UserApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('update_status/<int:form_id>', views.update_status, name='update_status'),
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
     path('register', views.register, name='register'),
