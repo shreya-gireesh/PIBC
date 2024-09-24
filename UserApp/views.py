@@ -15,7 +15,10 @@ def home(request):
         return redirect('/login')
     else:
         admin = AdminModel.objects.get(admin_id = user)
-        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        if admin.admin_last_name:
+            admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        else:
+            admin_name = f"{admin.admin_first_name}"
         loan_form = LoanApplicationModel.objects.filter(assigned_to = user)
 
         # Loans assigned to the user where status is "Accept"
@@ -110,7 +113,10 @@ def loanform(request):
         return redirect('/login')
     else:
         admin = AdminModel.objects.get(admin_id=user)
-        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        if admin.admin_last_name:
+            admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        else:
+            admin_name = f"{admin.admin_first_name}"
         loan = LoanModel.objects.all()
         status = StatusModel.objects.all()
         bank = BankModel.objects.all()
@@ -137,29 +143,72 @@ def loan_page(request, form_id):
         return redirect('/login')
     else:
         admin = AdminModel.objects.get(admin_id=user)
-        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        if admin.admin_last_name:
+            admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        else:
+            admin_name = f"{admin.admin_first_name}"
         # Get the specific form entry by ID
         form_instance = get_object_or_404(LoanApplicationModel, form_id=form_id)
         files = UploadedFile.objects.filter(loan_application=form_instance)
 
-        # Check if the form was submitted
+        #Check if the form was submitted
         if request.method == 'POST':
+
             form = LoanApplicationForm(request.POST, instance=form_instance)
-            followup_date = request.POST.get('followup_date')
-            description = request.POST.get('description')
-            status_name = request.POST.get('status_name')
-            application_description = request.POST.get('application_description')
-            form_instance.followup_date = followup_date
-            form_instance.description = description
-            form_instance.status_name = StatusModel.objects.get(status_id=status_name)
-            form_instance.application_description = application_description
+            if admin.is_superadmin:
+                first_name = request.POST.get('first_name')
+                last_name = request.POST.get('last_name')
+                district = request.POST.get('district')
+                place = request.POST.get('place')
+                phone_no = request.POST.get('phone_no')
+                loan_name = request.POST.get('loan_name')
+                loan_amount = request.POST.get('loan_amount')
+                bank_name = request.POST.get('bank_name')
+                executive_name = request.POST.get('executive_name')
+                mobileno_1 = request.POST.get('mobileno_1')
+                mobileno_2 = request.POST.get('mobileno_2')
+                followup_date = request.POST.get('followup_date')
+                description = request.POST.get('description')
+                status_name = request.POST.get('status_name')
+                application_description = request.POST.get('application_description')
+                assigned_to = request.POST.get('assigned_to')
+
+                form_instance.first_name = first_name
+                form_instance.last_name = last_name
+                form_instance.district = district
+                form_instance.place = place
+                form_instance.phone_no = phone_no
+                form_instance.loan_name = LoanModel.objects.get(loan_id=loan_name)
+                form_instance.loan_amount = loan_amount
+                form_instance.followup_date = followup_date
+                form_instance.description = description
+                form_instance.status_name = StatusModel.objects.get(status_id=status_name)
+                form_instance.application_description = application_description
+                form_instance.bank_name = BankModel.objects.get(bank_id=bank_name)
+                form_instance.executive_name = executive_name
+                form_instance.mobileno_1 = mobileno_1
+                form_instance.mobileno_2 = mobileno_2
+                if assigned_to:
+                    form_instance.assigned_to = AdminModel.objects.get(admin_id=assigned_to)
+                    form_instance.work_status = LoanApplicationModel.NOT_SELECTED
+
+            else:
+                followup_date = request.POST.get('followup_date')
+                description = request.POST.get('description')
+                status_name = request.POST.get('status_name')
+                application_description = request.POST.get('application_description')
+
+                form_instance.followup_date = followup_date
+                form_instance.description = description
+                form_instance.status_name = StatusModel.objects.get(status_id=status_name)
+                form_instance.application_description = application_description
+
+
             form_instance.save()
             return redirect('/')  # Redirect to a success page
-            # else:
-            #     print(form.errors)
+
         else:
             form = LoanApplicationForm(instance=form_instance)
-
         return render(request, 'loan-page.html', {'username':admin_name,'admin':admin,'form': form, 'files': files})
 
 
@@ -170,7 +219,10 @@ def all_app(request):
     else:
         loan_app = LoanApplicationModel.objects.all()
         admin = AdminModel.objects.get(admin_id=user)
-        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        if admin.admin_last_name:
+            admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        else:
+            admin_name = f"{admin.admin_first_name}"
         return render(request, 'all-files.html', {'username': admin_name, 'admin': admin, 'forms':loan_app})
 
 
@@ -182,7 +234,10 @@ def createuser(request):
 
     else:
         admin = AdminModel.objects.get(admin_id=user)
-        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        if admin.admin_last_name:
+            admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        else:
+            admin_name = f"{admin.admin_first_name}"
         if request.method == 'POST':
             first_name = request.POST.get('first_name')
             last_name = request.POST.get('last_name')
@@ -212,7 +267,11 @@ def addloan(request):
         return redirect('/login')
     else:
         admin = AdminModel.objects.get(admin_id=user)
-        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        if admin.admin_last_name:
+            admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        else:
+            admin_name = f"{admin.admin_first_name}"
+        all_loans = LoanModel.objects.all()
         if request.method == 'POST':
             form = LoanForm(request.POST)
             if form.is_valid():
@@ -220,7 +279,7 @@ def addloan(request):
                 return redirect('/')  # Redirect to login page after successful registration
         else:
             form = LoanForm()
-        return render(request, 'add-loan.html', {'username':admin_name,'admin':admin,'form': form})
+        return render(request, 'add-loan.html', {'username':admin_name,'admin':admin,'form': form, 'allloans': all_loans})
 
 def addstatus(request):
     user = request.session.get('user', None)
@@ -228,7 +287,12 @@ def addstatus(request):
         return redirect('/login')
     else:
         admin = AdminModel.objects.get(admin_id=user)
-        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        if admin.admin_last_name:
+            admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        else:
+            admin_name = f"{admin.admin_first_name}"
+
+        all_status = StatusModel.objects.all()
         if request.method == 'POST':
             form = StatusForm(request.POST)
             if form.is_valid():
@@ -236,7 +300,67 @@ def addstatus(request):
                 return redirect('/')  # Redirect to login page after successful registration
         else:
             form = StatusForm()
-        return render(request, 'add-status.html', {'username':admin_name,'admin':admin,'form': form})
+        return render(request, 'add-status.html', {'username':admin_name,'admin':admin,'form': form, 'allstatus':all_status})
+
+
+def addbank(request):
+    user = request.session.get('user', None)
+    if user is None:
+        return redirect('/login')
+    else:
+        admin = AdminModel.objects.get(admin_id=user)
+        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+        all_bank = BankModel.objects.all()
+        if request.method == 'POST':
+            form = BankForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('addbank')  # Redirect to login page after successful registration
+        else:
+            form = BankForm()
+        return render(request, 'add-bank.html', {'username':admin_name,'admin':admin,'form': form, 'allbank': all_bank})
+
+
+
+def delete_loan(request, loan_id):
+    loan = get_object_or_404(LoanModel, pk=loan_id)
+    if request.method == 'POST':
+        loan.delete()
+        return redirect('addloan')  # Adjust the redirect based on your URL name for the user list page
+    return redirect('addloan')
+
+def delete_status(request, status_id):
+    status = get_object_or_404(StatusModel, pk=status_id)
+    if request.method == 'POST':
+        status.delete()
+        return redirect('addstatus')  # Adjust the redirect based on your URL name for the user list page
+    return redirect('addstatus')
+
+
+def delete_bank(request, bank_id):
+    bank = get_object_or_404(BankModel, pk=bank_id)
+    if request.method == 'POST':
+        bank.delete()
+        return redirect('addbank')  # Adjust the redirect based on your URL name for the user list page
+    return redirect('addbank')
+
+
+def delete_user(request, admin_id):
+    user = get_object_or_404(AdminModel, pk=admin_id)
+    if request.method == 'POST':
+        LoanApplicationModel.objects.filter(assigned_to=user).update(assigned_to=None)
+        user.delete()
+        return redirect('/')  # Adjust the redirect based on your URL name for the user list page
+    return redirect('/')
+
+
+def delete_loanpage(request, form_id):
+    loan = get_object_or_404(LoanApplicationModel, pk=form_id)
+    if request.method == 'POST':
+        loan.delete()
+        return redirect('/')  # Adjust the redirect based on your URL name for the user list page
+    return redirect('/')
+
 
 def logout(request):
     del request.session['user']

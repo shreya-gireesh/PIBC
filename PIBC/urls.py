@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from UserApp import views
 
 urlpatterns = [
@@ -31,8 +33,18 @@ urlpatterns = [
     path('create-user', views.createuser, name='create-user'),
     path('add-loan', views.addloan, name='addloan'),
     path('add-status', views.addstatus, name='addstatus'),
+    path('add-bank', views.addbank, name='addbank'),
+    path('delete_loan/<int:loan_id>/', views.delete_loan, name='delete_loan'),
+    path('delete_status/<int:status_id>/', views.delete_status, name='delete_status'),
+    path('delete_bank/<int:bank_id>/', views.delete_bank, name='delete_bank'),
+    path('delete_user/<int:admin_id>/', views.delete_user, name='delete_user'),
+    path('delete_loan_page/<int:form_id>/', views.delete_loanpage, name='delete_loan_page'),
 
     #chart
     path('loan-data/', views.get_loan_data, name='get_loan_data'),
     path('loan-totals/', views.get_loan_totals, name='get_loan_totals'),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

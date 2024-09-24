@@ -58,6 +58,34 @@
         .table-responsive-xxl {
             padding-bottom: 15px;
         }
+
+        .icon-link {
+            text-decoration: none; /* Removes underline */
+        }
+
+        /* Style for the open file icon */
+        .open-icon {
+            color: #007bff;
+            transition: filter 0.3s ease, color 0.3s ease; /* Smooth transition */
+        }
+
+        /* Glow effect on hover using drop-shadow */
+        .open-icon:hover {
+            color: #007bff;
+            filter: drop-shadow(0 0 8px #007bff); /* Glow effect with blue color */
+        }
+
+        /* Style for the delete icon */
+        .delete-icon {
+            color: #ff4545;
+            transition: filter 0.3s ease, color 0.3s ease; /* Smooth transition */
+        }
+
+        /* Glow effect on hover using drop-shadow */
+        .delete-icon:hover {
+            color: #ff4545;
+            filter: drop-shadow(0 0 8px red); /* Glow effect with red color */
+        }
     </style>
   </head>
 
@@ -96,7 +124,7 @@
 
             {% if admin.is_superadmin %}
             <!-- Nav Item - Form -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{% url 'allapp' %}">
                     <i class="fas fa-list-alt"></i>
                     <span>All Applications</span></a>
@@ -127,6 +155,15 @@
                 <a class="nav-link" href="{% url 'addstatus' %}">
                     <i class="fas fa-edit"></i>
                     <span>Add Status</span></a>
+            </li>
+            {% endif %}
+
+            {% if admin.is_superadmin %}
+            <!-- Nav Item - Form -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'addbank' %}">
+                    <i class="fas fa-university"></i>
+                    <span>Add Bank</span></a>
             </li>
             {% endif %}
             <hr class="sidebar-divider d-none d-md-block">
@@ -192,7 +229,7 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Form</h1>
+                        <h1 class="h3 mb-0 text-gray-800">All Applications</h1>
 
                     </div>
 
@@ -212,7 +249,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Form</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Applications</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
@@ -222,7 +259,7 @@
                                                 <thead>
                                                     <tr>
                                                       <th scope="col">Sr No</th>
-                                                      <th scope="col">ID</th>
+
                                                       <th scope="col">First Name</th>
                                                       <th scope="col">Last Name</th>
                                                       <th scope="col">District</th>
@@ -240,6 +277,10 @@
                                                         {% if admin.is_superadmin %}
                                                       <th scope="col">Name</th>
                                                         {% endif %}
+                                                        <th scope="col">Actions</th>
+                                                        {% if admin.is_superadmin %}
+                                                      <th scope="col">User Status</th>
+                                                        {% endif %}
 
                                                     </tr>
                                                 </thead>
@@ -247,11 +288,7 @@
                                                     {% for form in forms %}
                                                     <tr>
                                                     <th scope="row">{{ forloop.counter }}</th>
-                                                    <td>
-                                                        <a href="{% url 'loan-page' form.form_id %}">
-                                                        {{form.form_id}}
-                                                        </a>
-                                                    </td>
+
                                                     <td>{{form.first_name}}</td>
                                                     <td>{{form.last_name}}</td>
                                                     <td>{{form.district}}</td>
@@ -272,6 +309,32 @@
                                                     </td>
                                                         {% if admin.is_superadmin %}
                                                         <td>{{form.assigned_to.admin_first_name}} {{form.assigned_to.admin_last_name}}</td>
+                                                        {% endif %}
+                                                        <td>
+                                                            <!-- Link to open the file -->
+                                                            <a href="{% url 'loan-page' form.form_id %}" class="mr-2 icon-link" style="display:inline;">
+                                                                <i class="fas fa-external-link-alt open-icon"></i> <!-- Open file icon -->
+                                                            </a>
+                                                            <!-- Link to delete the file -->
+
+                                                            <form action="{% url 'delete_loan_page' form.form_id %}" method="post" style="display:inline;">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn" onclick="return confirm('Are you sure you want to delete this?');">
+                                                                    <i class="fas fa-trash-alt delete-icon"></i>
+                                                                </button>
+                                                            </form>
+                                                            </td>
+                                                        {% if admin.is_superadmin %}
+                                                        <td>
+
+                                                            {% if form.work_status == "Accept" %}
+                                                                <span style="color: white; background-color:green;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
+                                                            {% elif form.work_status == "Reject" %}
+                                                                <span style="color: white; background-color:red;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
+                                                            {% else %}
+                                                                <span style="color: white; background-color:grey;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
+                                                            {% endif %}
+                                                        </td>
                                                         {% endif %}
                                                     </tr>
                                                     {% endfor %}

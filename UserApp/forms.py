@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import AdminModel, LoanApplicationModel, UserModel, LoanModel, StatusModel
+from .models import AdminModel, LoanApplicationModel, UserModel, LoanModel, StatusModel, BankModel
 
 
 class AdminForm(forms.ModelForm):
@@ -62,20 +62,60 @@ class LoanApplicationForm(forms.ModelForm):
             'loan_name': forms.Select(attrs={'class': 'form-select form-control'}),
             'loan_amount': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Amount'}),
             'followup_date': forms.DateInput(attrs={'class': 'form-control form-control-user', 'type': 'date'}),
-            'description': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3}),
+            'description': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3,'required': False}),
             'status_name': forms.Select(attrs={'class': 'form-select form-control'}),
             'application_description': forms.Textarea(
-                attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3}),
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3, 'required': False}),
             'bank_name': forms.Select(attrs={'class': 'form-select form-control'}),
             'executive_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Executive Name'}),
-            'mobileno_1': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 1'}),
-            'mobileno_2': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 2'}),
+            'mobileno_1': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 1', 'required': False}),
+            'mobileno_2': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 2', 'required': False}),
             'assigned_to':forms.Select(attrs={'class': 'form-select form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(LoanApplicationForm, self).__init__(*args, **kwargs)
         self.fields['assigned_to'].queryset = AdminModel.objects.filter(is_superadmin=False)
+
+
+        non_editable_fields = [
+            'first_name',
+            'last_name',
+            'district',
+            'place',
+            'phone_no',
+            'loan_name',
+            'loan_amount',
+            'bank_name',
+            'executive_name',
+            'mobileno_1',
+            'mobileno_2',
+            'assigned_to'
+        ]
+
+        # If the user is not super_admin, disable the fields
+        if user and not user.is_superadmin:  # Or user.is_super_admin if you have a custom super_admin attribute
+            for field in non_editable_fields:
+                self.fields[field].disabled = True  # Disable the field
+
+    def clean_phone_no(self):
+        phone_no = self.cleaned_data.get('phone_no')
+        if len(phone_no) != 10:
+            raise ValidationError("Phone number must be exactly 10 digits.")
+        return phone_no
+
+    def clean_mobileno_1(self):
+        mobileno_1 = self.cleaned_data.get('mobileno_1')
+        if mobileno_1 and len(mobileno_1) != 10:
+            raise ValidationError("Mobile number must be exactly 10 digits.")
+        return mobileno_1
+
+    def clean_mobileno_2(self):
+        mobileno_2 = self.cleaned_data.get('mobileno_2')
+        if mobileno_2 and len(mobileno_2) != 10:
+            raise ValidationError("Mobile number must be exactly 10 digits.")
+        return mobileno_2
     # def clean_phone_no(self):
     #     phone_no = self.cleaned_data.get('phone_no')
     #
@@ -103,4 +143,13 @@ class StatusForm(forms.ModelForm):
         fields = ['status_name']
         widgets = {
             'status_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Status Type'})
+        }
+
+
+class BankForm(forms.ModelForm):
+    class Meta:
+        model = BankModel
+        fields = ['bank_name']
+        widgets = {
+            'bank_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Bank Name'})
         }

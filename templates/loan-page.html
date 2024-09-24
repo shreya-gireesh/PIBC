@@ -40,9 +40,25 @@
             text-transform:capitalize;
         }
         .readonly-field {
-        background-color: #f0f0f0;
-        padding: 10px;
-    }
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+        /* Style for the delete icon */
+        .delete-icon {
+            color: #ff4545;
+            transition: filter 0.3s ease, color 0.3s ease; /* Smooth transition */
+        }
+
+        /* Glow effect on hover using drop-shadow */
+        .delete-icon:hover {
+            color: #ff4545;
+            filter: drop-shadow(0 0 8px red); /* Glow effect with red color */
+        }
+        .btn-primary{
+            font-size: smaller;
+            border-radius: 20px;
+
+        }
     </style>
   </head>
 
@@ -205,50 +221,104 @@
                                         {% csrf_token %}
                                         <div class="form-group row">
                                             <label for="first_name" class="col-sm-2 col-form-label">First Name</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.first_name }}
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{ form.instance.first_name }}
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="last_name" class="col-sm-2 col-form-label">Last Name</label>
-                                            <div class="col-sm-10 readonly-field">
-                                                {{ form.instance.last_name }}
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+
+                                                {{ form.last_name }}
+
                                             </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+
+                                                {{ form.instance.last_name }}
+
+                                            </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="district" class="col-sm-2 col-form-label">District</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.district }}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{ form.instance.district }}
+
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="place" class="col-sm-2 col-form-label">Place</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.place }}
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{ form.instance.place }}
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="phone_no" class="col-sm-2 col-form-label">Phone Number</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.phone_no }}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{ form.instance.phone_no }}
+
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="loan_name" class="col-sm-2 col-form-label">Type of Loan</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.loan_name }}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{ form.instance.loan_name }}
+
                                             </div>
+                                            {% endif %}
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="loan_amount" class="col-sm-2 col-form-label">Loan Amount</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.loan_amount }}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{ form.instance.loan_amount }}
+
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="followup_date" class="col-sm-2 col-form-label">Follow Up Date</label>
-                                            <div class="col-sm-10">
+                                            <div class="col-sm-10 ">
                                                 {{ form.followup_date }}
                                             </div>
                                         </div>
@@ -277,37 +347,91 @@
                                         </div>
                                         <div class="form-group row">
                                             <label for="bank_name" class="col-sm-2 col-form-label">Choose Bank</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{form.bank_name}}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{form.instance.bank_name}}
+
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="executive_name" class="col-sm-2 col-form-label">Executive Name</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{form.executive_name}}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
                                                 {{form.instance.executive_name}}
+
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="mobileno_1" class="col-sm-2 col-form-label">Mobile No 1:</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{form.mobileno_1}}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
-            {{form.instance.mobileno_1}}
-        </div>
+                                                {{form.instance.mobileno_1}}
+
+                                            </div>
+                                            {% endif %}
                                         </div>
                                         <div class="form-group row">
                                             <label for="mobileno_2" class="col-sm-2 col-form-label">Mobile No 2:</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{form.mobileno_2}}
+
+                                            </div>
+                                            {% else %}
                                             <div class="col-sm-10 readonly-field">
-            {{form.instance.mobileno_2}}
-        </div>
+                                                {{form.instance.mobileno_2}}
+
+                                            </div>
+                                            {% endif %}
                                         </div>
 
                                         <div class="form-group row">
                                             <label for="files" class="col-sm-2 col-form-label">Uploaded files:</label>
                                             <div class="col-sm-10">
-                                                {% for file in files %}
-                                                <a href="{{file.file.url}}" download>{{file.file}}</a><br/>
-                                                {% endfor %}
+                                                {% if files %}
+                                                    {% for file in files %}
+                                                    <a href="{{file.file.url}}" download>
+                                                        {{file.file}}
+                                                    </a>
+
+                                                <form method="POST" action="{% url 'delete_file' file.id %}" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm"><i class="fa fa-trash-alt" style="color:red;"></i></button>
+                                                </form>
+                                                <br/>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <p>No files uploaded</p>
+                                                {% endif %}
+
                                             </div>
                                         </div>
+                                         {% if admin.is_superadmin %}
+                                        <div class="form-group row">
+                                            <label for="assigned_to" class="col-sm-2 col-form-label">Choose User</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.assigned_to}}
+                                            </div>
+                                        </div>
+                                        {% endif %}
 
                                         <input type="submit" class="btn btn-primary btn-user btn-block d-block mx-auto" value="SUBMIT">
                                     </form>
@@ -371,6 +495,17 @@
         </div>
     </div>
 
+
+    <script>
+        document.getElementById('add-file-btn').addEventListener('click', function() {
+            var fileForm = document.getElementById('file-upload-form');
+            if (fileForm.style.display === 'none' || fileForm.style.display === '') {
+                fileForm.style.display = 'block';
+            } else {
+                fileForm.style.display = 'none';
+            }
+        });
+    </script>
     <!-- Bootstrap core JavaScript-->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>

@@ -6,7 +6,7 @@ from django.dispatch import receiver
 class AdminModel(models.Model):
     admin_id = models.AutoField(primary_key=True)
     admin_first_name = models.CharField(max_length=100)
-    admin_last_name = models.CharField(max_length=100, null=True)
+    admin_last_name = models.CharField(max_length=100,blank=True, null=True)
     admin_email = models.EmailField()
     admin_password = models.CharField(max_length=100)
     is_superadmin = models.BooleanField(default=False)
@@ -64,18 +64,18 @@ class LoanApplicationModel(models.Model):
     district = models.CharField(max_length=100)
     place = models.CharField(max_length=100)
     phone_no = models.CharField(max_length=15, null=True)
-    loan_name = models.ForeignKey(LoanModel, on_delete=models.CASCADE)
+    loan_name = models.ForeignKey(LoanModel, on_delete=models.SET_NULL, null=True, blank=True)
     loan_amount = models.DecimalField(max_digits=10, decimal_places=2)
     followup_date = models.DateField()
-    description = models.TextField()
-    status_name = models.ForeignKey(StatusModel, on_delete=models.CASCADE)
-    application_description = models.TextField(null=True)
-    bank_name = models.ForeignKey(BankModel, on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
+    status_name = models.ForeignKey(StatusModel, on_delete=models.SET_NULL, null=True, blank=True)
+    application_description = models.TextField(null=True, blank=True)
+    bank_name = models.ForeignKey(BankModel, on_delete=models.SET_NULL, null=True, blank=True)
 
     executive_name = models.CharField(max_length=100)
-    mobileno_1 = models.CharField(max_length=15)
+    mobileno_1 = models.CharField(max_length=15,null=True, blank=True)
     mobileno_2 = models.CharField(max_length=15, blank=True, null=True)
-    assigned_to = models.ForeignKey(AdminModel, on_delete=models.CASCADE)
+    assigned_to = models.ForeignKey(AdminModel, on_delete=models.SET_NULL, null=True, blank=True)
     work_status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
