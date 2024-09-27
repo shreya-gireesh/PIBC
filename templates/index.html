@@ -357,24 +357,23 @@
                         </thead>
                         <tbody>
                             {% for form in new_loans %}
-                                {% if form.assigned_to == admin and form.work_status == 'Not selected' %}
-                                    <tr>
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td>{{ form.first_name }}</td>
-                                        <td>{{ form.last_name }}</td>
-                                        <td>{{ form.loan_name }}</td>
-                                        <td>{{ form.loan_amount }}</td>
-                                        <td>
-                                            <form method="post" action="{% url 'update_status' form.form_id %}">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="loan_id" value="form.form_id">
-                                                <button type="submit" name="status" value="Accept" class="btn btn-success btn-sm">Accept</button>
-                                                <button type="submit" name="status" value="Reject" class="btn btn-danger btn-sm">Reject</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ form.first_name }}</td>
+        <td>{{ form.last_name }}</td>
+        <td>{{ form.loan_name }}</td>
+        <td>{{ form.loan_amount }}</td>
+        <td>
+            <a href="{% url 'loan-page' form.form_id %}" class="btn btn-primary btn-sm mb-2">View</a>
+            <form method="post" action="{% url 'update_status' form.form_id %}">
+                {% csrf_token %}
+                <input type="hidden" name="loan_id" value="{{ form.form_id }}">
+                <button type="submit" name="status" value="Accept" class="btn btn-success btn-sm">Accept</button>
+                <button type="submit" name="status" value="Reject" class="btn btn-danger btn-sm">Reject</button>
+            </form>
+        </td>
+    </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -444,7 +443,7 @@
                                                       <th scope="col">Mobile No 1</th>
 
                                                         {% if admin.is_superadmin %}
-                                                      <th scope="col">Name</th>
+                                                      <th scope="col">Assigned to</th>
                                                         {% endif %}
                                                       <th scope="col">Actions</th>
                                                         {% if admin.is_superadmin %}
@@ -478,20 +477,25 @@
                                                         {% endif %}
                                                     </td>
                                                         {% if admin.is_superadmin %}
-                                                        <td>{{form.assigned_to.admin_first_name}} {{form.assigned_to.admin_last_name}}</td>
+                                                        <td>
+                                                            {% for member in form.assigned_to.all %}
+                                                            <li>{{ member.admin_first_name }} </li>
+                                                            {% empty %}
+                                                            <li>No members</li>
+                                                            {% endfor %}
+                                                        </td>
                                                         {% endif %}
                                                     <td>
                                                         <a href="{% url 'loan-page' form.form_id %}">Check this</a>
                                                     </td>
                                                         {% if admin.is_superadmin %}
                                                         <td>
-
-                                                            {% if form.work_status == "Accept" %}
-                                                                <span style="color: white; background-color:green;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
-                                                            {% elif form.work_status == "Reject" %}
-                                                                <span style="color: white; background-color:red;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
+                                                            {% if form.workstatus == "Accept" %}
+                                                                <span style="color: white; background-color:green;border-radius:20px;padding:5px;">{{ form.workstatus }}</span>
+                                                            {% elif form.workstatus == "Reject" %}
+                                                                <span style="color: white; background-color:red;border-radius:20px;padding:5px;">{{ form.workstatus }}</span>
                                                             {% else %}
-                                                                <span style="color: white; background-color:grey;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
+                                                                <span style="color: white; background-color:grey;border-radius:20px;padding:5px;">{{ form.workstatus }}</span>
                                                             {% endif %}
                                                         </td>
                                                         {% endif %}

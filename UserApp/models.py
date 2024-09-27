@@ -47,6 +47,20 @@ class BankModel(models.Model):
     def __str__(self):
         return self.bank_name
 
+class StaffSelectionModel(models.Model):
+    selection_id = models.AutoField(primary_key = True)
+    selection = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.selection
+
+class YearModel(models.Model):
+    year_id = models.AutoField(primary_key = True)
+    year_range = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.year_range
+
 
 class LoanApplicationModel(models.Model):
     ACCEPT = 'Accept'
@@ -58,12 +72,28 @@ class LoanApplicationModel(models.Model):
         (REJECT, 'Reject'),
         (NOT_SELECTED, 'Not selected'),
     ]
+
     form_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
     place = models.CharField(max_length=100)
     phone_no = models.CharField(max_length=15, null=True)
+
+    guaranter_name = models.CharField(max_length=100, null=True, blank=True)
+    guaranter_phoneno = models.CharField(max_length=50, null=True, blank=True)
+    guaranter_job = models.CharField(max_length=100, null=True, blank=True)
+    guaranter_cibil_score = models.CharField(max_length=50, null=True, blank=True)
+    guaranter_cibil_issue = models.TextField(null=True, blank=True)
+    guaranter_it_payable = models.BooleanField(default=False)
+    guaranter_years = models.ForeignKey(YearModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='guaranter_year')
+
+    job = models.CharField(max_length=100, null=True, blank=True)
+    cibil_score = models.CharField(max_length=100, null=True, blank=True)
+    cibil_issue = models.TextField(null=True, blank=True)
+    it_payable = models.BooleanField(default=False)
+    years = models.ForeignKey(YearModel, on_delete=models.SET_NULL, null=True,blank=True, related_name='customer_year')
+
     loan_name = models.ForeignKey(LoanModel, on_delete=models.SET_NULL, null=True, blank=True)
     loan_amount = models.DecimalField(max_digits=10, decimal_places=2)
     followup_date = models.DateField()
@@ -75,8 +105,9 @@ class LoanApplicationModel(models.Model):
     executive_name = models.CharField(max_length=100)
     mobileno_1 = models.CharField(max_length=15,null=True, blank=True)
     mobileno_2 = models.CharField(max_length=15, blank=True, null=True)
-    assigned_to = models.ForeignKey(AdminModel, on_delete=models.SET_NULL, null=True, blank=True)
-    work_status = models.CharField(
+    assigned_to = models.ManyToManyField(AdminModel, blank=True)
+    document_description = models.TextField(null=True, blank=True)
+    workstatus = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default=NOT_SELECTED,  # Set default value to "Not selected"

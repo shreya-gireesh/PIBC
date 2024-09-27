@@ -30,7 +30,7 @@
         .btn-block{
             width: 50%!important;
         }
-
+        hr{ border-top: 1px solid rgb(0 0 0 / 40%)!important;}
         .form-select{
             font-size: 0.8rem!important;
         }
@@ -193,7 +193,7 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Form</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Application</h1>
 
                     </div>
 
@@ -213,12 +213,13 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Form</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Applicant</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <form class="p-5 user" method="POST">
                                         {% csrf_token %}
+
                                         <div class="form-group row">
                                             <label for="first_name" class="col-sm-2 col-form-label">First Name</label>
                                             {% if admin.is_superadmin %}
@@ -287,6 +288,159 @@
                                             </div>
                                             {% endif %}
                                         </div>
+                                        <hr>
+                                        <h6 class="m-0 font-weight-bold text-primary">Guaranter</h6>
+                                        <div class="form-group row">
+                                            <label for="guaranter_name" class="col-sm-2 col-form-label">Name</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.guaranter_name }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.guaranter_name }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_phoneno" class="col-sm-2 col-form-label">Phone Number</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.guaranter_phoneno }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.guaranter_phoneno }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_job" class="col-sm-2 col-form-label">Job</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.guaranter_job }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.guaranter_job }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_cibil_score" class="col-sm-2 col-form-label">Cibil Score</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.guaranter_cibil_score }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.guaranter_cibil_score }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_cibil_issue" class="col-sm-2 col-form-label">Cibil Issue</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.guaranter_cibil_issue }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.guaranter_cibil_issue }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+
+
+
+                                        <hr>
+                                        <div class="form-group row">
+                                            <label for="job" class="col-sm-2 col-form-label">Job</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.job }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.job }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cibil_score" class="col-sm-2 col-form-label">Cibil Score</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.cibil_score }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.cibil_score }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cibil_issue" class="col-sm-2 col-form-label">Cibil Issue</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.cibil_issue }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.cibil_issue }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="it_payable" class="col-sm-2 col-form-label">IT Payable</label>
+                                            {% if admin.is_superadmin %}
+        <div class="col-sm-10">
+            {% if form.it_payable %}
+                Yes
+            {% else %}
+                No
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="col-sm-10 readonly-field">
+            {% if form.instance.it_payable %}
+                Yes
+            {% else %}
+                No
+            {% endif %}
+        </div>
+    {% endif %}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="years" class="col-sm-2 col-form-label">Years</label>
+                                            {% if admin.is_superadmin %}
+                                            <div class="col-sm-10 ">
+                                                {{ form.years }}
+
+                                            </div>
+                                            {% else %}
+                                            <div class="col-sm-10 readonly-field">
+                                                {{ form.instance.years }}
+
+                                            </div>
+                                            {% endif %}
+                                        </div>
+
                                         <div class="form-group row">
                                             <label for="loan_name" class="col-sm-2 col-form-label">Type of Loan</label>
                                             {% if admin.is_superadmin %}
@@ -401,7 +555,7 @@
                                             </div>
                                             {% endif %}
                                         </div>
-
+                                        {% if form.instance.workstatus != 'Not selected' %}
                                         <div class="form-group row">
                                             <label for="files" class="col-sm-2 col-form-label">Uploaded files:</label>
                                             <div class="col-sm-10">
@@ -411,10 +565,7 @@
                                                         {{file.file}}
                                                     </a>
 
-                                                <form method="POST" action="{% url 'delete_file' file.id %}" style="display:inline;">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-sm"><i class="fa fa-trash-alt" style="color:red;"></i></button>
-                                                </form>
+
                                                 <br/>
                                                     {% endfor %}
                                                 {% else %}
@@ -423,6 +574,7 @@
 
                                             </div>
                                         </div>
+                                        {% endif %}
                                          {% if admin.is_superadmin %}
                                         <div class="form-group row">
                                             <label for="assigned_to" class="col-sm-2 col-form-label">Choose User</label>
@@ -432,8 +584,9 @@
                                             </div>
                                         </div>
                                         {% endif %}
-
+                                         {% if form.instance.workstatus != 'Not selected' %}
                                         <input type="submit" class="btn btn-primary btn-user btn-block d-block mx-auto" value="SUBMIT">
+                                        {% endif %}
                                     </form>
                                 </div>
                             </div>

@@ -41,6 +41,19 @@ class LoanApplicationForm(forms.ModelForm):
             'district',
             'place',
             'phone_no',
+            'guaranter_name',
+            'guaranter_phoneno',
+            'guaranter_job',
+            'guaranter_cibil_score',
+            'guaranter_cibil_issue',
+            'guaranter_it_payable',
+            'guaranter_years',
+            'job',
+            'cibil_score',
+            'cibil_issue',
+            'it_payable',
+            'years',
+
             'loan_name',
             'loan_amount',
             'followup_date',
@@ -51,7 +64,8 @@ class LoanApplicationForm(forms.ModelForm):
             'executive_name',
             'mobileno_1',
             'mobileno_2',
-            'assigned_to'
+            'assigned_to',
+            'document_description'
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'First Name'}),
@@ -59,6 +73,19 @@ class LoanApplicationForm(forms.ModelForm):
             'district': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'District'}),
             'place': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Place'}),
             'phone_no': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Phone Number'}),
+
+            'guaranter_name':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Name', 'required': False}),
+            'guaranter_phoneno':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Phone Number','required': False}),
+            'guaranter_job':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Job', 'required': False}),
+            'guaranter_cibil_score':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Score', 'required': False}),
+            'guaranter_cibil_issue':forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Issue', 'rows': 3,'required': False}),
+            'guaranter_years': forms.Select(attrs={'class': 'form-select form-control'}),
+
+            'job': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Job', 'required': False}),
+            'cibil_score': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Score', 'required': False}),
+            'cibil_issue': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Issue','rows':3,'required': False}),
+            'years': forms.Select(attrs={'class': 'form-select form-control'}),
+
             'loan_name': forms.Select(attrs={'class': 'form-select form-control'}),
             'loan_amount': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Amount'}),
             'followup_date': forms.DateInput(attrs={'class': 'form-control form-control-user', 'type': 'date'}),
@@ -70,7 +97,9 @@ class LoanApplicationForm(forms.ModelForm):
             'executive_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Executive Name'}),
             'mobileno_1': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 1', 'required': False}),
             'mobileno_2': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 2', 'required': False}),
-            'assigned_to':forms.Select(attrs={'class': 'form-select form-control'}),
+            'assigned_to': forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'assigned_to'}),
+            'document_description': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3,'required': False}),
+
         }
 
     def __init__(self, *args, **kwargs):

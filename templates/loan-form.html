@@ -16,7 +16,7 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <style>
@@ -30,7 +30,7 @@
         .btn-block{
             width: 50%!important;
         }
-
+        hr{ border-top: 1px solid rgb(0 0 0 / 40%)!important;}
         .form-select{
             font-size: 0.8rem!important;
         }
@@ -194,12 +194,13 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Application</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Applicant</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <form class="p-5 user" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
+
                                         <div class="form-group row">
                                             <label for="first_name" class="col-sm-2 col-form-label">First Name</label>
                                             <div class="col-sm-10">
@@ -234,10 +235,109 @@
 
                                                 {{form.phone_no}}
                                                 {% if form.phone_no.errors %}
-            <div class="text-danger">
-                {{ form.phone_no.errors }}
-            </div>
-        {% endif %}
+                                                    <div class="text-danger">
+                                                        {{ form.phone_no.errors }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <h6 class="m-0 font-weight-bold text-primary">Guaranter</h6>
+                                        <div class="form-group row">
+                                            <label for="guaranter_name" class="col-sm-2 col-form-label">Name</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.guaranter_name}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_phoneno" class="col-sm-2 col-form-label">Phone Number</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.guaranter_phoneno}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_job" class="col-sm-2 col-form-label">Job</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.guaranter_job}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_cibil_score" class="col-sm-2 col-form-label">Cibil Score</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.guaranter_cibil_score}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_cibil_issue" class="col-sm-2 col-form-label">Cibil Issue</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.guaranter_cibil_issue}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_it_payable" class="col-sm-2 col-form-label">IT Payable</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.guaranter_it_payable}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="guaranter_years" class="col-sm-2 col-form-label">No of Years</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.guaranter_years}}
+
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group row">
+                                            <label for="job" class="col-sm-2 col-form-label">Job</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.job}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cibil_score" class="col-sm-2 col-form-label">Cibil Score</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.cibil_score}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cibil_issue" class="col-sm-2 col-form-label">Cibil Issue</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.cibil_issue}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="it_payable" class="col-sm-2 col-form-label">IT Payable</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.it_payable}}
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="years" class="col-sm-2 col-form-label">Years</label>
+                                            <div class="col-sm-10">
+
+                                                {{form.years}}
+
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -317,6 +417,12 @@
                                             <div class="col-sm-10">
 
                                                 <input type="file" id="files" name="files" multiple>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="document_description" class="col-sm-2 col-form-label">Document Description</label>
+                                            <div class="col-sm-10">
+                                            {{form.document_description}}
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -407,6 +513,17 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
     <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#assigned_to').select2({
+            placeholder: "Select users",
+            allowClear: true
+        });
+    });
+</script>
 
 </body>
 

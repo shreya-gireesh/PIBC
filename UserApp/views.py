@@ -19,15 +19,17 @@ def home(request):
             admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
         else:
             admin_name = f"{admin.admin_first_name}"
-        loan_form = LoanApplicationModel.objects.filter(assigned_to = user)
-
-        # Loans assigned to the user where status is "Accept"
-        accepted_loans = loan_form.filter(work_status='Accept')
-        new_loans = loan_form.filter(work_status = 'Not selected')
+        loan_form = LoanApplicationModel.objects.filter(
+            assigned_to=user
+        )
+        #
+        # # Loans assigned to the user where status is "Accept"
+        accepted_loans = loan_form.filter(workstatus='Accept')
+        new_loans = loan_form.filter(workstatus = 'Not selected')
         accepted_loans_count = accepted_loans.count()
 
         today = datetime.now().date()
-        all_loans = LoanApplicationModel.objects.filter(followup_date = today, work_status='Accept')
+        all_loans = LoanApplicationModel.objects.filter(followup_date = today, workstatus='Accept')
         loan_followup = all_loans.filter(assigned_to = user)
         all_users = AdminModel.objects.filter(is_superadmin = False)
         all_users_count = all_users.count()
@@ -46,13 +48,13 @@ def home(request):
                 'admin': admin
             }
         else:
-            # if request.method == 'POST':
-            #     # Check if the user is submitting an update for the status
-            #     status = request.POST.get('status')
-            #
-            #     if status in ['Accept', 'Reject']:
-            #         loan_form.work_status = status
-            #         loan_form.save()
+            if request.method == 'POST':
+                # Check if the user is submitting an update for the status
+                status = request.POST.get('status')
+
+                if status in ['Accept', 'Reject']:
+                    loan_form.workstatus = status
+                    loan_form.save()
             context = {
                 'username': admin_name,
                 'forms': accepted_loans,
@@ -62,7 +64,6 @@ def home(request):
                 'loan_app_count': accepted_loans_count,
                 'admin': admin
             }
-
         return render(request, 'index.html', context)
 
 
@@ -75,7 +76,7 @@ def update_status(request, form_id):
         status = request.POST.get('status')
 
         if status in ['Accept', 'Reject']:
-            loan_form.work_status = status
+            loan_form.workstatus = status
             loan_form.save()
 
         # After updating the status, redirect back to the home page

@@ -308,7 +308,13 @@
                                                         {% endif %}
                                                     </td>
                                                         {% if admin.is_superadmin %}
-                                                        <td>{{form.assigned_to.admin_first_name}} {{form.assigned_to.admin_last_name}}</td>
+                                                        <td>
+                                                            {% for member in form.assigned_to.all %}
+                                                            <li>{{ member.admin_first_name }} </li>
+                                                            {% empty %}
+                                                            <li>No members</li>
+                                                            {% endfor %}
+                                                        </td>
                                                         {% endif %}
                                                         <td>
                                                             <!-- Link to open the file -->
@@ -327,12 +333,12 @@
                                                         {% if admin.is_superadmin %}
                                                         <td>
 
-                                                            {% if form.work_status == "Accept" %}
-                                                                <span style="color: white; background-color:green;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
-                                                            {% elif form.work_status == "Reject" %}
-                                                                <span style="color: white; background-color:red;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
+                                                            {% if form.workstatus == "Accept" %}
+                                                                <span style="color: white; background-color:green;border-radius:20px;padding:5px;">{{ form.workstatus }}</span>
+                                                            {% elif form.workstatus == "Reject" %}
+                                                                <span style="color: white; background-color:red;border-radius:20px;padding:5px;">{{ form.workstatus }}</span>
                                                             {% else %}
-                                                                <span style="color: white; background-color:grey;border-radius:20px;padding:5px;">{{ form.work_status }}</span>
+                                                                <span style="color: white; background-color:grey;border-radius:20px;padding:5px;">{{ form.workstatus }}</span>
                                                             {% endif %}
                                                         </td>
                                                         {% endif %}
