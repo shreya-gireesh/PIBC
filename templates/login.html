@@ -88,13 +88,14 @@
                                     </div>
                                     <form class="user" method="POST">
                                         {% csrf_token %}
+                                        {% if error %}
                                         <div>
                                            <p class="small text-danger">{{error}}</p>
                                         </div>
+                                        {% endif %}
                                         <div class="form-group">
-                                            <input type="email" name="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
+                                            <input type="text" name="identifier" class="form-control form-control-user"
+                                            placeholder="Enter Email Address or Phone Number...">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" class="form-control form-control-user"
@@ -104,12 +105,10 @@
 
                                     </form>
                                     <hr>
-<!--                                    <div class="text-center">-->
-<!--                                        <a class="small text-white" href="forgot-password.html">Forgot Password?</a>-->
-<!--                                    </div>-->
-<!--                                    <div class="text-center">-->
-<!--                                        <a class="small" href="{% url 'register' %}">Create an Account!</a>-->
-<!--                                    </div>-->
+
+                                    <div class="text-center">
+                                        <a class="small" href="{% url 'register' %}">Create an Account!</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

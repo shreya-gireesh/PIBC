@@ -5,6 +5,10 @@ from django.db.models.functions import TruncMonth, TruncYear
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
+
+from django.template.context_processors import request
+
 from UserApp.models import *
 from UserApp.forms import *
 
@@ -84,28 +88,37 @@ def update_status(request, form_id):
 
 
 def login(request):
+    error = None
     if request.method == 'POST':
-        email = request.POST.get('email')
+        identifier = request.POST.get('identifier')
         password = request.POST.get('password')
         try:
-            admin = AdminModel.objects.get(admin_email=email, admin_password=password)
+            admin = AdminModel.objects.get(admin_email=identifier, admin_password=password)
             request.session['user'] = admin.admin_id
             request.session.set_expiry(3600)
             return redirect('/')
         except AdminModel.DoesNotExist:
-            return render(request, 'login.html', {'error': "User not found"})
-    return render(request, 'login.html')
+            error = "User doesnt exist"
+        try:
+            admin = UserModel.objects.get(user_phoneno = identifier, user_password = password)
+            request.session['user'] = admin.user_id
+            request.session.set_expiry(3600)
+            return redirect('dashboard')
+        except UserModel.DoesNotExist:
+            error = "User doesnt exist"
+
+    return render(request, 'login.html', {'error': error})
 
 
 def register(request):
     if request.method == 'POST':
-        form = AdminForm(request.POST)
+        form = UserForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')  # Redirect to login page after successful registration
     else:
-        form = AdminForm()
-    return render(request, 'login.html', {'form': form})
+        form = UserForm()
+    return render(request, 'register.html', {'form': form})
 
 
 def loanform(request):
@@ -132,6 +145,7 @@ def loanform(request):
                         loan_application=LoanApplicationModel.objects.get(form_id=loan_form.form_id )
                     )
                 return redirect('/')
+
         else:
             form = LoanApplicationForm()
         return render(request, 'loan-form.html',{'username':admin_name,'admin':admin,'loan':loan, 'status': status, 'bank': bank, 'form': form})
@@ -156,60 +170,75 @@ def loan_page(request, form_id):
         if request.method == 'POST':
 
             form = LoanApplicationForm(request.POST, instance=form_instance)
-            if admin.is_superadmin:
-                first_name = request.POST.get('first_name')
-                last_name = request.POST.get('last_name')
-                district = request.POST.get('district')
-                place = request.POST.get('place')
-                phone_no = request.POST.get('phone_no')
-                loan_name = request.POST.get('loan_name')
-                loan_amount = request.POST.get('loan_amount')
-                bank_name = request.POST.get('bank_name')
-                executive_name = request.POST.get('executive_name')
-                mobileno_1 = request.POST.get('mobileno_1')
-                mobileno_2 = request.POST.get('mobileno_2')
-                followup_date = request.POST.get('followup_date')
-                description = request.POST.get('description')
-                status_name = request.POST.get('status_name')
-                application_description = request.POST.get('application_description')
-                assigned_to = request.POST.get('assigned_to')
+            if request.POST.get('submit-form'):
 
-                form_instance.first_name = first_name
-                form_instance.last_name = last_name
-                form_instance.district = district
-                form_instance.place = place
-                form_instance.phone_no = phone_no
-                form_instance.loan_name = LoanModel.objects.get(loan_id=loan_name)
-                form_instance.loan_amount = loan_amount
-                form_instance.followup_date = followup_date
-                form_instance.description = description
-                form_instance.status_name = StatusModel.objects.get(status_id=status_name)
-                form_instance.application_description = application_description
-                form_instance.bank_name = BankModel.objects.get(bank_id=bank_name)
-                form_instance.executive_name = executive_name
-                form_instance.mobileno_1 = mobileno_1
-                form_instance.mobileno_2 = mobileno_2
-                if assigned_to:
-                    form_instance.assigned_to = AdminModel.objects.get(admin_id=assigned_to)
-                    form_instance.work_status = LoanApplicationModel.NOT_SELECTED
+                if admin.is_superadmin:
+                    first_name = request.POST.get('first_name')
+                    last_name = request.POST.get('last_name')
+                    district = request.POST.get('district')
+                    place = request.POST.get('place')
+                    phone_no = request.POST.get('phone_no')
+                    loan_name = request.POST.get('loan_name')
+                    loan_amount = request.POST.get('loan_amount')
+                    bank_name = request.POST.get('bank_name')
+                    executive_name = request.POST.get('executive_name')
+                    mobileno_1 = request.POST.get('mobileno_1')
+                    mobileno_2 = request.POST.get('mobileno_2')
+                    followup_date = request.POST.get('followup_date')
+                    description = request.POST.get('description')
+                    status_name = request.POST.get('status_name')
+                    application_description = request.POST.get('application_description')
+                    assigned_to = request.POST.getlist('assigned_to')
 
-            else:
-                followup_date = request.POST.get('followup_date')
-                description = request.POST.get('description')
-                status_name = request.POST.get('status_name')
-                application_description = request.POST.get('application_description')
+                    form_instance.first_name = first_name
+                    form_instance.last_name = last_name
+                    form_instance.district = district
+                    form_instance.place = place
+                    form_instance.phone_no = phone_no
+                    form_instance.loan_name = LoanModel.objects.get(loan_id=loan_name)
+                    form_instance.loan_amount = loan_amount
+                    form_instance.followup_date = followup_date
+                    form_instance.description = description
+                    form_instance.status_name = StatusModel.objects.get(status_id=status_name)
+                    form_instance.application_description = application_description
+                    form_instance.bank_name = BankModel.objects.get(bank_id=bank_name)
+                    form_instance.executive_name = executive_name
+                    form_instance.mobileno_1 = mobileno_1
+                    form_instance.mobileno_2 = mobileno_2
+                    if assigned_to:
+                        form_instance.assigned_to.set(AdminModel.objects.filter(admin_id__in=assigned_to))
+                        form_instance.work_status = LoanApplicationModel.NOT_SELECTED
 
-                form_instance.followup_date = followup_date
-                form_instance.description = description
-                form_instance.status_name = StatusModel.objects.get(status_id=status_name)
-                form_instance.application_description = application_description
+                else:
+                    followup_date = request.POST.get('followup_date')
+                    description = request.POST.get('description')
+                    status_name = request.POST.get('status_name')
+                    application_description = request.POST.get('application_description')
+
+                    form_instance.followup_date = followup_date
+                    form_instance.description = description
+                    form_instance.status_name = StatusModel.objects.get(status_id=status_name)
+                    form_instance.application_description = application_description
 
 
-            form_instance.save()
-            return redirect('/')  # Redirect to a success page
+                form_instance.save()
+
+            # Redirect to a success page
+            if request.POST.get('new_files'):
+                files = request.FILES.getlist('uploaded_files')
+                formid = request.POST.get('form_id')
+
+
+                for file in files:
+                    UploadedFile.objects.create(
+                        file = file,
+                        loan_application=LoanApplicationModel.objects.get(form_id=formid )
+                    )
+                return redirect('loan-page', form_id)
 
         else:
             form = LoanApplicationForm(instance=form_instance)
+            files = UploadedFile.objects.filter(loan_application=form_instance)
         return render(request, 'loan-page.html', {'username':admin_name,'admin':admin,'form': form, 'files': files})
 
 
@@ -321,7 +350,13 @@ def addbank(request):
             form = BankForm()
         return render(request, 'add-bank.html', {'username':admin_name,'admin':admin,'form': form, 'allbank': all_bank})
 
-
+def delete_files(request, id):
+    file = get_object_or_404(UploadedFile, pk=id)
+    loan_id = file.loan_application.form_id
+    if request.method == 'POST':
+        file.delete()
+        return redirect('loan-page', loan_id)  # Adjust the redirect based on your URL name for the user list page
+    return redirect('loan-page', loan_id)
 
 def delete_loan(request, loan_id):
     loan = get_object_or_404(LoanModel, pk=loan_id)
@@ -362,11 +397,75 @@ def delete_loanpage(request, form_id):
         return redirect('/')  # Adjust the redirect based on your URL name for the user list page
     return redirect('/')
 
+def dashboard(request):
+    user = request.session.get('user', None)
+    if user is None:
+        return redirect('/login')
+
+    admin = UserModel.objects.get(user_id=user)
+    if admin.user_last_name:
+        admin_name = f"{admin.user_first_name} {admin.user_last_name}"
+    else:
+        admin_name = f"{admin.user_first_name}"
+    phoneno = admin.user_phoneno
+    try:
+        loan_application = LoanApplicationModel.objects.get(phone_no=phoneno)
+        status = loan_application.status_name.status_name if loan_application.status_name else None
+    except ObjectDoesNotExist:
+        # If the loan application does not exist, set status to None or a default value
+        status = None
+
+    def get_progress_percentage(status):
+        if status == "Application Started":
+            return 1  # Step 1
+        elif status == "Completed":
+            return 3  # Step 3
+        else:
+            return 2
+
+
+    progress_step = get_progress_percentage(status)
+
+    context = {
+        'admin': admin,
+        'username': admin_name,
+        'progress_step': progress_step,
+        'status': status,
+    }
+    return render(request, 'dashboard.html', context)
+
+def loan_application_status(request):
+    # Assume the user's phone number is passed in the request
+    user_phone = request.GET.get('phone_no')
+
+    # Fetch the loan application based on the user's phone number
+    loan_application = get_object_or_404(LoanApplicationModel, phone_no=user_phone)
+
+    # Get the status name
+    status = loan_application.status_name.status_name if loan_application.status_name else "Not Available"
+
+    # Determine progress percentage based on status
+    def get_progress_percentage(status):
+        if status == "Application Started":
+            return 33  # 1 out of 3
+        elif status in ["Pending", "Some Other Statuses"]:
+            return 66  # 2 out of 3
+        elif status == "Completed":
+            return 100  # 3 out of 3
+        return 0
+
+    progress_percentage = get_progress_percentage(status)
+
+    context = {
+        'progress_percentage': progress_percentage,
+        'status': status,
+    }
+
+    return render(request, 'dashboard.html', context)
 
 def logout(request):
     del request.session['user']
     return redirect('/')
-
 
 
 # chart

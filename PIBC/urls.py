@@ -39,6 +39,10 @@ urlpatterns = [
     path('delete_bank/<int:bank_id>/', views.delete_bank, name='delete_bank'),
     path('delete_user/<int:admin_id>/', views.delete_user, name='delete_user'),
     path('delete_loan_page/<int:form_id>/', views.delete_loanpage, name='delete_loan_page'),
+    path('delete_files/<int:id>/', views.delete_files, name='delete_files'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+# path('loan-status/', views.loan_application_status, name='loan_application_status'),
+
 
     #chart
     path('loan-data/', views.get_loan_data, name='get_loan_data'),

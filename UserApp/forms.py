@@ -182,3 +182,48 @@ class BankForm(forms.ModelForm):
         widgets = {
             'bank_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Bank Name'})
         }
+
+class UserForm(forms.ModelForm):
+    repeat_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control form-control-user', 'placeholder': 'Repeat Password'}
+        ),
+        label="Repeat Password"
+    )
+
+    class Meta:
+        model = UserModel
+        fields = ['user_first_name', 'user_last_name', 'user_phoneno', 'user_password']
+        widgets = {
+            'user_first_name': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'First Name'}),
+            'user_last_name': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Last Name'}),
+            'user_phoneno': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Phone Number'}),
+            'user_password': forms.PasswordInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Password'}),
+        }
+    def clean_user_phoneno(self):
+        phoneno = self.cleaned_data.get('user_phoneno')
+        if UserModel.objects.filter(user_phoneno=phoneno).exists():
+            raise ValidationError("An admin with this phone number already exists.")
+        if len(phoneno) != 10 or not phoneno.isdigit():
+            raise ValidationError("Phone Number must be exactly 10 digits and contain only numbers.")
+        return phoneno
+
+    def clean_user_password(self):
+        password = self.cleaned_data.get('user_password')
+        if len(password) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
+        # Add more password validations if needed (e.g., complexity)
+        return password
+
+    def clean_repeat_password(self):
+        repeat_password = self.cleaned_data.get('repeat_password')
+        password = self.cleaned_data.get('user_password')
+
+        if password and repeat_password and password != repeat_password:
+            raise ValidationError("Passwords do not match.")
+
+        return repeat_password

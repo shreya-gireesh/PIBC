@@ -18,10 +18,12 @@ class AdminModel(models.Model):
 class UserModel(models.Model):
     user_id = models.AutoField(primary_key=True)
     user_first_name = models.CharField(max_length=100)
-    user_last_name = models.CharField(max_length=100)
-    user_email = models.CharField(max_length=100)
+    user_last_name = models.CharField(max_length=100, null=True, blank=True)
     user_phoneno = models.CharField(max_length=100)
+    user_password = models.CharField(max_length=100, null=True)
 
+    def __str__(self):
+        return self.user_first_name
 
 
 class LoanModel(models.Model):
@@ -119,5 +121,6 @@ class LoanApplicationModel(models.Model):
 
 
 class UploadedFile(models.Model):
+
     loan_application = models.ForeignKey(LoanApplicationModel, related_name='uploaded_files', on_delete=models.CASCADE)
     file = models.FileField(upload_to='files/')

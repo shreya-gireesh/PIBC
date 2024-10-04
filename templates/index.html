@@ -364,10 +364,11 @@
         <td>{{ form.loan_name }}</td>
         <td>{{ form.loan_amount }}</td>
         <td>
-            <a href="{% url 'loan-page' form.form_id %}" class="btn btn-primary btn-sm mb-2">View</a>
+
             <form method="post" action="{% url 'update_status' form.form_id %}">
                 {% csrf_token %}
                 <input type="hidden" name="loan_id" value="{{ form.form_id }}">
+                <a href="{% url 'loan-page' form.form_id %}" class="btn btn-primary btn-sm">View</a>
                 <button type="submit" name="status" value="Accept" class="btn btn-success btn-sm">Accept</button>
                 <button type="submit" name="status" value="Reject" class="btn btn-danger btn-sm">Reject</button>
             </form>
