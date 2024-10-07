@@ -77,10 +77,10 @@ class LoanApplicationModel(models.Model):
 
     form_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    district = models.CharField(max_length=100)
-    place = models.CharField(max_length=100)
-    phone_no = models.CharField(max_length=15, null=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    district = models.CharField(max_length=100, null=True, blank=True)
+    place = models.CharField(max_length=100, null=True, blank=True)
+    phone_no = models.CharField(max_length=15, null=True, blank=True)
 
     guaranter_name = models.CharField(max_length=100, null=True, blank=True)
     guaranter_phoneno = models.CharField(max_length=50, null=True, blank=True)
@@ -97,14 +97,14 @@ class LoanApplicationModel(models.Model):
     years = models.ForeignKey(YearModel, on_delete=models.SET_NULL, null=True,blank=True, related_name='customer_year')
 
     loan_name = models.ForeignKey(LoanModel, on_delete=models.SET_NULL, null=True, blank=True)
-    loan_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    followup_date = models.DateField()
+    loan_amount = models.DecimalField(max_digits=10,default=0, decimal_places=2, null=True, blank=True)
+    followup_date = models.DateField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     status_name = models.ForeignKey(StatusModel, on_delete=models.SET_NULL, null=True, blank=True)
     application_description = models.TextField(null=True, blank=True)
     bank_name = models.ForeignKey(BankModel, on_delete=models.SET_NULL, null=True, blank=True)
 
-    executive_name = models.CharField(max_length=100)
+    executive_name = models.CharField(max_length=100, null=True, blank=True)
     mobileno_1 = models.CharField(max_length=15,null=True, blank=True)
     mobileno_2 = models.CharField(max_length=15, blank=True, null=True)
     assigned_to = models.ManyToManyField(AdminModel, blank=True)
@@ -117,6 +117,7 @@ class LoanApplicationModel(models.Model):
     )
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.loan_name}"
+
 
 
 

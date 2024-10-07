@@ -69,32 +69,32 @@ class LoanApplicationForm(forms.ModelForm):
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'First Name'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Last Name'}),
-            'district': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'District'}),
-            'place': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Place'}),
-            'phone_no': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Phone Number'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Last Name', 'required': False}),
+            'district': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'District', 'required': False}),
+            'place': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Place', 'required': False}),
+            'phone_no': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Phone Number', 'required': False}),
 
             'guaranter_name':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Name', 'required': False}),
             'guaranter_phoneno':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Phone Number','required': False}),
             'guaranter_job':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Job', 'required': False}),
             'guaranter_cibil_score':forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Score', 'required': False}),
             'guaranter_cibil_issue':forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Issue', 'rows': 3,'required': False}),
-            'guaranter_years': forms.Select(attrs={'class': 'form-select form-control'}),
+            'guaranter_years': forms.Select(attrs={'class': 'form-select form-control', 'required': False}),
 
             'job': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Job', 'required': False}),
             'cibil_score': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Score', 'required': False}),
             'cibil_issue': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Cibil Issue','rows':3,'required': False}),
-            'years': forms.Select(attrs={'class': 'form-select form-control'}),
+            'years': forms.Select(attrs={'class': 'form-select form-control', 'required': False}),
 
-            'loan_name': forms.Select(attrs={'class': 'form-select form-control'}),
-            'loan_amount': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Amount'}),
-            'followup_date': forms.DateInput(attrs={'class': 'form-control form-control-user', 'type': 'date'}),
+            'loan_name': forms.Select(attrs={'class': 'form-select form-control', 'required': False}),
+            'loan_amount': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Amount', 'required': False}),
+            'followup_date': forms.DateInput(attrs={'class': 'form-control form-control-user', 'type': 'date', 'required': False}),
             'description': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3,'required': False}),
-            'status_name': forms.Select(attrs={'class': 'form-select form-control'}),
+            'status_name': forms.Select(attrs={'class': 'form-select form-control', 'required': False}),
             'application_description': forms.Textarea(
                 attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3, 'required': False}),
-            'bank_name': forms.Select(attrs={'class': 'form-select form-control'}),
-            'executive_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Executive Name'}),
+            'bank_name': forms.Select(attrs={'class': 'form-select form-control', 'required': False}),
+            'executive_name': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Executive Name', 'required': False}),
             'mobileno_1': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 1', 'required': False}),
             'mobileno_2': forms.TextInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No 2', 'required': False}),
             'assigned_to': forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'assigned_to'}),
@@ -130,7 +130,7 @@ class LoanApplicationForm(forms.ModelForm):
 
     def clean_phone_no(self):
         phone_no = self.cleaned_data.get('phone_no')
-        if len(phone_no) != 10:
+        if phone_no and len(phone_no) != 10:
             raise ValidationError("Phone number must be exactly 10 digits.")
         return phone_no
 

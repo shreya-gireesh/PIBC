@@ -195,29 +195,38 @@ def loan_page(request, form_id):
                     form_instance.district = district
                     form_instance.place = place
                     form_instance.phone_no = phone_no
-                    form_instance.loan_name = LoanModel.objects.get(loan_id=loan_name)
-                    form_instance.loan_amount = loan_amount
-                    form_instance.followup_date = followup_date
+                    if loan_name:
+                        form_instance.loan_name = LoanModel.objects.get(loan_id=loan_name)
+                    if loan_amount:
+                        form_instance.loan_amount = loan_amount
+                    else:
+                        form_instance.loan_amount = 0
+                    if followup_date:
+                        form_instance.followup_date = followup_date
                     form_instance.description = description
-                    form_instance.status_name = StatusModel.objects.get(status_id=status_name)
+                    if status_name:
+                        form_instance.status_name = StatusModel.objects.get(status_id=status_name)
                     form_instance.application_description = application_description
-                    form_instance.bank_name = BankModel.objects.get(bank_id=bank_name)
+                    if bank_name:
+                        form_instance.bank_name = BankModel.objects.get(bank_id=bank_name)
                     form_instance.executive_name = executive_name
                     form_instance.mobileno_1 = mobileno_1
                     form_instance.mobileno_2 = mobileno_2
                     if assigned_to:
                         form_instance.assigned_to.set(AdminModel.objects.filter(admin_id__in=assigned_to))
-                        form_instance.work_status = LoanApplicationModel.NOT_SELECTED
+                        form_instance.workstatus = 'Not selected'
+
 
                 else:
                     followup_date = request.POST.get('followup_date')
                     description = request.POST.get('description')
                     status_name = request.POST.get('status_name')
                     application_description = request.POST.get('application_description')
-
-                    form_instance.followup_date = followup_date
+                    if followup_date:
+                        form_instance.followup_date = followup_date
                     form_instance.description = description
-                    form_instance.status_name = StatusModel.objects.get(status_id=status_name)
+                    if status_name:
+                        form_instance.status_name = StatusModel.objects.get(status_id=status_name)
                     form_instance.application_description = application_description
 
 
