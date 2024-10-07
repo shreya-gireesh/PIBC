@@ -88,7 +88,7 @@ class LoanApplicationForm(forms.ModelForm):
 
             'loan_name': forms.Select(attrs={'class': 'form-select form-control', 'required': False}),
             'loan_amount': forms.NumberInput(attrs={'class': 'form-control form-control-user', 'placeholder': 'Amount', 'required': False}),
-            'followup_date': forms.DateInput(attrs={'class': 'form-control form-control-user', 'type': 'date', 'required': False}),
+            'followup_date': forms.DateInput(attrs={'class': 'form-control form-control-user', 'type': 'date'}),
             'description': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Description', 'rows': 3,'required': False}),
             'status_name': forms.Select(attrs={'class': 'form-select form-control', 'required': False}),
             'application_description': forms.Textarea(

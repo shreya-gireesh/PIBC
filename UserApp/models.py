@@ -98,7 +98,7 @@ class LoanApplicationModel(models.Model):
 
     loan_name = models.ForeignKey(LoanModel, on_delete=models.SET_NULL, null=True, blank=True)
     loan_amount = models.DecimalField(max_digits=10,default=0, decimal_places=2, null=True, blank=True)
-    followup_date = models.DateField(null=True, blank=True)
+    followup_date = models.DateField()
     description = models.TextField(null=True, blank=True)
     status_name = models.ForeignKey(StatusModel, on_delete=models.SET_NULL, null=True, blank=True)
     application_description = models.TextField(null=True, blank=True)
