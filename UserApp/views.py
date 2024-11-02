@@ -41,6 +41,7 @@ def home(request):
         loan_app_count = loan_app.count()
         last_loan_app = loan_app.order_by('-form_id')[:10]
 
+        login_success = request.GET.get('login_success') == 'true'
         if admin.is_superadmin :
             context = {
                 'username': admin_name,
@@ -49,7 +50,8 @@ def home(request):
                 'total_users_count': all_users_count,
                 'loan_app_count': loan_app_count,
                 'all_users': all_users,
-                'admin': admin
+                'admin': admin,
+                'login_success': login_success
             }
         else:
             if request.method == 'POST':
@@ -66,7 +68,8 @@ def home(request):
                 'loans': loan_followup,
                 'total_users_count': all_users_count,
                 'loan_app_count': accepted_loans_count,
-                'admin': admin
+                'admin': admin,
+                'login_success': login_success
             }
         return render(request, 'index.html', context)
 
@@ -96,7 +99,7 @@ def login(request):
             admin = AdminModel.objects.get(admin_email=identifier, admin_password=password)
             request.session['user'] = admin.admin_id
             request.session.set_expiry(3600)
-            return redirect('/')
+            return redirect('/?login_success=true')
         except AdminModel.DoesNotExist:
             error = "User doesnt exist"
         try:
@@ -214,7 +217,7 @@ def loan_page(request, form_id):
                     form_instance.mobileno_2 = mobileno_2
                     if assigned_to:
                         form_instance.assigned_to.set(AdminModel.objects.filter(admin_id__in=assigned_to))
-                        form_instance.workstatus = 'Not selected'
+
 
 
                 else:
@@ -419,7 +422,7 @@ def dashboard(request):
     phoneno = admin.user_phoneno
     try:
         loan_application = LoanApplicationModel.objects.get(phone_no=phoneno)
-        status = loan_application.status_name.status_name if loan_application.status_name else None
+        status = loan_application.status_name.status_name if loan_application.status_name else "Application Started"
     except ObjectDoesNotExist:
         # If the loan application does not exist, set status to None or a default value
         status = None
@@ -429,12 +432,14 @@ def dashboard(request):
             return 1  # Step 1
         elif status == "Completed":
             return 3  # Step 3
+        elif status == "Rejected":
+            return 3
         else:
             return 2
 
 
     progress_step = get_progress_percentage(status)
-
+    print(progress_step)
     context = {
         'admin': admin,
         'username': admin_name,
@@ -471,6 +476,105 @@ def loan_application_status(request):
     }
 
     return render(request, 'dashboard.html', context)
+
+def staff_uploaded(request):
+    user = request.session.get('user', None)
+    if user is None:
+        return redirect('/login')
+
+    admin = AdminModel.objects.get(admin_id=user)
+    if admin.admin_last_name:
+        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+    else:
+        admin_name = f"{admin.admin_first_name}"
+
+    if request.method == 'POST':
+        form = StaffForm(request.POST)
+        if form.is_valid():
+            staff_assignment = form.save(commit=False)  # Do not save yet
+            staff_assignment.created_at = datetime.now()  # Set the created_at field to now
+            staff_assignment.assigned_by = admin  # Set assigned_by to the current user
+            staff_assignment.save()  # Now save the instance
+            return redirect('/')  # Redirect to a success page or another page as needed
+    else:
+        form = StaffForm()
+
+    return render(request, 'assign_assignment.html', {'form': form, 'username':admin_name})
+
+def all_assignments(request):
+    user = request.session.get('user', None)
+    if user is None:
+        return redirect('/login')
+
+    admin = AdminModel.objects.get(admin_id=user)
+    if admin.admin_last_name:
+        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+    else:
+        admin_name = f"{admin.admin_first_name}"
+    if admin.is_superadmin:
+        assignments = StaffAssignmentModel.objects.all()
+    else:
+        assignments = StaffAssignmentModel.objects.filter(assign_to = admin)
+
+    all_staff = AdminModel.objects.filter(is_superadmin = False)
+
+
+    return render(request, 'staff_assignments.html', {'assignments': assignments,'admin': admin ,'username': admin_name, 'all_staff': all_staff})
+
+
+def update_assignment(request, assignment_id):
+    if request.method == 'POST':
+        assigned_to_id = request.POST.get('assigned_to')
+        assignment = StaffAssignmentModel.objects.get(assignment_id=assignment_id)
+        print(assigned_to_id)
+        # Update assigned staff if selected
+        if assigned_to_id:
+            assignment.assign_to = AdminModel.objects.get(admin_id=assigned_to_id)
+        else:
+            assignment.assign_to = None
+        assignment.save()
+
+    return redirect('staff_assignments')  # Redirect to the main assignments page
+
+def update_profile(request):
+    user = request.session.get('user', None)
+    if user is None:
+        return redirect('/login')
+
+    admin = AdminModel.objects.get(admin_id=user)
+    if admin.admin_last_name:
+        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+    else:
+        admin_name = f"{admin.admin_first_name}"
+
+    user_profile = ProfileUpdate.objects.get(staff = admin)
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            profile = form.save(commit=False)  # Do not save yet  # Set the created_at field to now
+            profile.staff = admin  # Set assigned_by to the current user
+            profile.save()  # Now save the instance
+            return redirect('/')  # Redirect to a success page or another page as needed
+    else:
+        form = ProfileUpdateForm(instance=user_profile)
+
+    return render(request, 'profile_update.html', {'form': form, 'username': admin_name, 'user_profile': user_profile})
+
+def view_staffs(request, id):
+    user = request.session.get('user', None)
+    if user is None:
+        return redirect('/login')
+
+    admin = AdminModel.objects.get(admin_id=user)
+    if admin.admin_last_name:
+        admin_name = f"{admin.admin_first_name} {admin.admin_last_name}"
+    else:
+        admin_name = f"{admin.admin_first_name}"
+
+    print(id)
+    staff = ProfileUpdate.objects.filter(staff = id)
+    print(staff.values())
+    return render(request, 'all_staffs.html', {'profiles': staff, 'username': admin_name})
 
 def logout(request):
     del request.session['user']
@@ -518,3 +622,4 @@ def get_loan_totals(request):
     }
 
     return JsonResponse(response_data)
+

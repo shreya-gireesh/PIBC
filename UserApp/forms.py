@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import AdminModel, LoanApplicationModel, UserModel, LoanModel, StatusModel, BankModel
+from .models import AdminModel, LoanApplicationModel, UserModel, LoanModel, StatusModel, BankModel, \
+    StaffAssignmentModel, ProfileUpdate
 
 
 class AdminForm(forms.ModelForm):
@@ -227,3 +228,46 @@ class UserForm(forms.ModelForm):
             raise ValidationError("Passwords do not match.")
 
         return repeat_password
+
+class StaffForm(forms.ModelForm):
+    class Meta:
+        model = StaffAssignmentModel
+        fields = ['name', 'district', 'place', 'mobile_no', 'loan_type', 'details']
+        widgets={
+            'name': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Name'}),
+            'district': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'District'}),
+            'place': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Place'}),
+            'mobile_no': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Mobile No.'}),
+            'loan_type': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Loan Type'}),
+            'details': forms.Textarea(attrs={'class': 'form-control form-control-user', 'placeholder': 'Properrty Detail/Car Detail', 'rows': 3,'required': False}),
+        }
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ProfileUpdate
+        fields = ['adhaar_no', 'adhaar_img', 'pan_no', 'pan_img', 'cancelled_check', 'bank_name', 'ifsc_code', 'account_no', 'branch']
+        widgets = {
+            'adhaar_no': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Aadhaar No'}),
+            'adhaar_img': forms.FileInput(
+                attrs={'class': 'form-file', 'placeholder': 'Upload Aadhaar Image'}),
+            'pan_no': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Pan No'}),
+            'pan_img': forms.FileInput(
+                attrs={'class': 'form-file', 'placeholder': 'Upload PAN Image'}),
+            'cancelled_check': forms.FileInput(
+                attrs={'class': 'form-file', 'placeholder': 'Upload Cancelled Check'}),
+            'bank_name': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Bank Name'}),
+            'ifsc_code': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'IFSC Code'}),
+            'account_no': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Account No'}),
+            'branch': forms.TextInput(
+                attrs={'class': 'form-control form-control-user', 'placeholder': 'Branch'}),
+        }

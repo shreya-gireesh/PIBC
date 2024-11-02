@@ -40,7 +40,13 @@ urlpatterns = [
     path('delete_user/<int:admin_id>/', views.delete_user, name='delete_user'),
     path('delete_loan_page/<int:form_id>/', views.delete_loanpage, name='delete_loan_page'),
     path('delete_files/<int:id>/', views.delete_files, name='delete_files'),
+
+    path('staff_upload', views.staff_uploaded, name = 'staff_upload'),
+    path('staff_assignments', views.all_assignments, name = 'staff_assignments'),
+    path('update/<int:assignment_id>/', views.update_assignment, name='update_assignment'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('update-profile/', views.update_profile, name = 'update_profile'),
+    path('view_profile/<int:id>', views.view_staffs, name = 'view_profile'),
 # path('loan-status/', views.loan_application_status, name='loan_application_status'),
 
 

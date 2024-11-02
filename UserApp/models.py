@@ -12,7 +12,23 @@ class AdminModel(models.Model):
     is_superadmin = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.admin_first_name} {self.admin_last_name}"
+        return f"{self.admin_first_name} {self.admin_last_name}{self.admin_id}"
+
+class ProfileUpdate(models.Model):
+    update_id = models.AutoField(primary_key=True)
+    staff = models.ForeignKey(AdminModel, on_delete=models.CASCADE)
+    adhaar_no = models.CharField(max_length=100, null=True, blank=True)
+    adhaar_img = models.FileField(upload_to='adhaar/', null=True, blank=True)
+    pan_no = models.CharField(max_length=100, null=True, blank=True)
+    pan_img = models.FileField(upload_to='pancard/', null=True, blank=True)
+    cancelled_check = models.FileField(upload_to='cancelled_check/', null=True, blank=True)
+    bank_name = models.CharField(max_length=100, null=True, blank=True)
+    ifsc_code = models.CharField(max_length=100, null=True, blank=True)
+    account_no = models.CharField(max_length=100, null=True, blank=True)
+    branch = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.staff.admin_first_name
 
 
 class UserModel(models.Model):
@@ -98,7 +114,7 @@ class LoanApplicationModel(models.Model):
 
     loan_name = models.ForeignKey(LoanModel, on_delete=models.SET_NULL, null=True, blank=True)
     loan_amount = models.DecimalField(max_digits=10,default=0, decimal_places=2, null=True, blank=True)
-    followup_date = models.DateField()
+    followup_date = models.DateField(null = True)
     description = models.TextField(null=True, blank=True)
     status_name = models.ForeignKey(StatusModel, on_delete=models.SET_NULL, null=True, blank=True)
     application_description = models.TextField(null=True, blank=True)
@@ -125,3 +141,19 @@ class UploadedFile(models.Model):
 
     loan_application = models.ForeignKey(LoanApplicationModel, related_name='uploaded_files', on_delete=models.CASCADE)
     file = models.FileField(upload_to='files/')
+
+class StaffAssignmentModel(models.Model):
+    assignment_id = models.AutoField(primary_key = True)
+    name = models.CharField(max_length=100)
+    district = models.CharField(max_length=100)
+    place = models.CharField(max_length=100)
+    mobile_no = models.CharField(max_length=10)
+    loan_type = models.CharField(max_length=100, null=True, blank=True)
+    details = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True)
+    assign_to = models.ForeignKey(AdminModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_to')
+    assigned_by = models.ForeignKey(AdminModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_by')
+
+
+    def __str__(self):
+        return self.name
